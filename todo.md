@@ -42,7 +42,8 @@
 - [x] Add a rendered UI integration test for industry selection, active-step state, and reduced-motion behaviour.
 - [x] Exercise all five workflow tabs in an explicitly mobile-sized browser session and record their updated title and steps.
 - [x] Verify the Lumae GitHub remote and configure secure authenticated repository access for this session.
-- [ ] Commit all completed Lumae project changes and push them to the configured GitHub repository.
+- [x] Commit all completed Lumae project changes and push them to the configured GitHub repository.
 - [ ] Commit and push each future completed task group to the Lumae GitHub repository.
 - [x] Set the Lumae GitHub destination to github.com/BigLittleBusiness/lumae and verify authenticated access before pushing.
-- [ ] Switch the Lumae repository to session-scoped GitHub authentication and remove only the Lumae PAT from persistent credential storage without affecting other repositories.
+- [x] Switch the Lumae repository to session-scoped GitHub authentication and remove only the Lumae PAT from persistent credential storage without affecting other repositories.
+- [x] Verify that no Lumae credential remains in persistent Git storage and that this repository uses only its session-scoped cache.
