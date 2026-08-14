@@ -6,6 +6,9 @@ import { publicProcedure, router } from "./_core/trpc";
 import { createEarlyAccessSignup, getEarlyAccessSignupByEmail } from "./db";
 import { normalizeWaitlistInput } from "./waitlist";
 
+const industries = ["financial_services", "healthcare", "professional_services", "retail", "saas_technology", "other"] as const;
+const companySizes = ["1_10", "11_50", "51_200", "201_500", "501_plus"] as const;
+
 export const appRouter = router({
   system: systemRouter,
   auth: router({
@@ -23,6 +26,8 @@ export const appRouter = router({
           email: z.string().trim().email().max(320),
           name: z.string().trim().max(120).optional(),
           company: z.string().trim().max(160).optional(),
+          industry: z.enum(industries),
+          companySize: z.enum(companySizes),
         })
       )
       .mutation(async ({ input }) => {

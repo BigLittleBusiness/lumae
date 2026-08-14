@@ -12,3 +12,7 @@
 - [x] Verify desktop and mobile rendering, update this checklist, and create the first complete project checkpoint.
 - [x] Document source-backed ANZ B2B SaaS visual-language research and record that domain/trade-mark clearance remains an external pre-launch requirement.
 - [x] Create an explicit three-tier feature-comparison matrix for the landing page alongside the monthly and annual price presentation.
+- [x] Add a dedicated Features page with detailed feature narratives and visual dashboard/product mockups.
+- [x] Add an interactive marketing-site survey-builder preview that lets visitors configure and preview a simple survey.
+- [x] Extend early-access signups with industry and company-size fields across the database schema, server validation, and form experience.
+- [x] Add tests for the expanded lead-capture payload and verify the new page and interactive preview across desktop and mobile.

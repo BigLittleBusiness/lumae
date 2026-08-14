@@ -25,7 +25,7 @@ const logoUrl = "/manus-storage/lumae-logo-mark_b397bb7a.png";
 
 const navItems = [
   ["Why Lumae", "#why-lumae"],
-  ["Platform", "#platform"],
+  ["Features", "/features"],
   ["Pricing", "#pricing"],
   ["Research", "#research"],
   ["Brand", "#brand"],
@@ -69,6 +69,66 @@ const trustPrinciples = [
   { icon: PanelTop, title: "Service-ready", copy: "Templates and journeys are organised around real service moments, not surveys in isolation." },
 ];
 
+const industryOptions = [
+  ["financial_services", "Financial services"],
+  ["healthcare", "Healthcare"],
+  ["professional_services", "Professional services"],
+  ["retail", "Retail"],
+  ["saas_technology", "SaaS & technology"],
+  ["other", "Other"],
+] as const;
+
+const companySizeOptions = [
+  ["1_10", "1–10 people"],
+  ["11_50", "11–50 people"],
+  ["51_200", "51–200 people"],
+  ["201_500", "201–500 people"],
+  ["501_plus", "501+ people"],
+] as const;
+
+type IndustryValue = (typeof industryOptions)[number][0];
+type CompanySizeValue = (typeof companySizeOptions)[number][0];
+
+function SurveyBuilderPreview() {
+  const [question, setQuestion] = useState("How was your support experience today?");
+  const [channel, setChannel] = useState("Email");
+  const [score, setScore] = useState<number | null>(null);
+  const [saved, setSaved] = useState(false);
+
+  return (
+    <section id="survey-preview" className="mt-20 overflow-hidden rounded-[30px] border border-[#10283B]/12 bg-[#10283B] p-4 text-white shadow-[0_24px_54px_rgba(16,40,59,0.14)] sm:mt-24 sm:p-6" aria-labelledby="builder-heading">
+      <div className="grid gap-7 lg:grid-cols-[0.86fr_1.14fr] lg:items-stretch">
+        <div className="rounded-[23px] bg-white p-5 text-[#10283B] sm:p-7">
+          <p className="font-mono text-[10px] uppercase tracking-[0.16em] text-[#0E867E]">Interactive preview</p>
+          <h3 id="builder-heading" className="mt-4 text-3xl font-extrabold leading-[1.02] tracking-[-0.06em]">Build a customer moment in under a minute.</h3>
+          <p className="mt-4 text-sm leading-6 text-[#486170]">Try the controls. This is a marketing preview of the future survey studio, not a live survey.</p>
+          <label className="mt-7 block text-xs font-bold">Question
+            <textarea value={question} onChange={event => { setQuestion(event.target.value); setSaved(false); }} maxLength={140} className="mt-2 min-h-[90px] w-full resize-none rounded-xl border border-[#10283B]/15 bg-[#FBFAF7] px-3 py-3 text-sm font-medium outline-none transition-colors focus:border-[#0E867E]" />
+          </label>
+          <label className="mt-4 block text-xs font-bold">Delivery channel
+            <select value={channel} onChange={event => { setChannel(event.target.value); setSaved(false); }} className="mt-2 w-full rounded-xl border border-[#10283B]/15 bg-[#FBFAF7] px-3 py-3 text-sm font-semibold outline-none focus:border-[#0E867E]">
+              <option>Email</option><option>SMS</option><option>In-app</option>
+            </select>
+          </label>
+          <button onClick={() => setSaved(true)} className="mt-5 inline-flex items-center gap-2 rounded-full bg-[#0E867E] px-5 py-3 text-sm font-extrabold text-white transition-all hover:-translate-y-0.5 hover:bg-[#0a746d]">{saved ? "Preview saved" : "Save preview"}<Check size={16} /></button>
+          {saved && <p className="mt-3 text-xs font-semibold text-[#0E867E]" role="status">This survey is ready to send to a test audience.</p>}
+        </div>
+        <div className="relative overflow-hidden rounded-[23px] border border-white/15 bg-[#E9F0F0] p-5 sm:p-8">
+          <div className="absolute -right-12 -top-12 h-44 w-44 rounded-full border-[22px] border-[#0E867E]/15" />
+          <div className="relative mx-auto max-w-md rounded-[22px] border border-[#10283B]/12 bg-white p-5 shadow-[0_16px_34px_rgba(16,40,59,0.12)] sm:p-7">
+            <div className="flex items-center justify-between"><BrandLockup /><span className="rounded-full bg-[#e4f4f1] px-3 py-1 font-mono text-[10px] uppercase tracking-[0.12em] text-[#0E867E]">{channel}</span></div>
+            <div className="mt-9"><p className="font-mono text-[10px] uppercase tracking-[0.15em] text-[#486170]">Support follow-up</p><h4 className="mt-3 text-pretty text-2xl font-extrabold leading-tight tracking-[-0.045em] text-[#10283B]">{question || "Add your feedback question"}</h4><p className="mt-3 text-sm leading-6 text-[#486170]">Your response helps us improve the experience for everyone.</p></div>
+            <div className="mt-8 grid grid-cols-5 gap-2">{[1, 2, 3, 4, 5].map(value => <button key={value} onClick={() => setScore(value)} className={`grid aspect-square place-items-center rounded-xl border text-lg font-extrabold transition-all ${score === value ? "border-[#0E867E] bg-[#0E867E] text-white shadow-[0_8px_16px_rgba(14,134,126,0.2)]" : "border-[#10283B]/12 bg-[#FBFAF7] text-[#10283B] hover:border-[#0E867E]"}`} aria-label={`Rate ${value} out of 5`}>{value}</button>)}</div>
+            <div className="mt-3 flex justify-between font-mono text-[9px] uppercase tracking-[0.1em] text-[#486170]"><span>Not satisfied</span><span>Very satisfied</span></div>
+            <button className="mt-7 w-full rounded-xl bg-[#10283B] py-3 text-sm font-extrabold text-white">Continue</button>
+          </div>
+          <div className="relative mt-5 flex flex-wrap items-center justify-between gap-3 rounded-xl border border-[#10283B]/10 bg-white/70 px-4 py-3 font-mono text-[10px] uppercase tracking-[0.12em] text-[#486170]"><span>Question type · CSAT scale</span><span className="text-[#0E867E]">Preview active</span></div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
 const plans = [
   { name: "Signal", audience: "For small teams establishing a feedback cadence.", monthly: 89, annual: 79, annualTotal: "A$948", response: "1,000 responses/month", seats: "3 full seats", accent: false, items: ["NPS, CSAT, CES & custom surveys", "Email distribution", "Live dashboard & CSV exports", "Basic segments & filters"] },
   { name: "Momentum", audience: "For service teams turning feedback into an operating rhythm.", monthly: 249, annual: 219, annualTotal: "A$2,628", response: "5,000 responses/month", seats: "10 full seats", accent: true, items: ["Everything in Signal", "SMS & in-app distribution", "Automations & recovery alerts", "CRM/helpdesk integrations", "Scheduled reports"] },
@@ -93,12 +153,12 @@ function TinyTag({ children }: { children: React.ReactNode }) {
 export default function Home() {
   const [annual, setAnnual] = useState(true);
   const [menuOpen, setMenuOpen] = useState(false);
-  const [form, setForm] = useState({ email: "", name: "", company: "" });
+  const [form, setForm] = useState({ email: "", name: "", company: "", industry: "" as "" | IndustryValue, companySize: "" as "" | CompanySizeValue });
   const [formMessage, setFormMessage] = useState("");
   const joinWaitlist = trpc.waitlist.join.useMutation({
     onSuccess: data => {
       setFormMessage(data.status === "joined" ? "You’re on the early-access list. We’ll be in touch." : "You’re already on the early-access list.");
-      if (data.status === "joined") setForm({ email: "", name: "", company: "" });
+      if (data.status === "joined") setForm({ email: "", name: "", company: "", industry: "", companySize: "" });
     },
     onError: () => setFormMessage("Please enter a valid email address and try again."),
   });
@@ -106,7 +166,11 @@ export default function Home() {
   function submitWaitlist(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     setFormMessage("");
-    joinWaitlist.mutate(form);
+    if (!form.industry || !form.companySize) {
+      setFormMessage("Please select your industry and company size.");
+      return;
+    }
+    joinWaitlist.mutate({ ...form, industry: form.industry, companySize: form.companySize });
   }
 
   return (
@@ -211,6 +275,10 @@ export default function Home() {
         <div className="mt-14 grid gap-x-8 gap-y-0 md:grid-cols-2 lg:grid-cols-3">{capabilities.map(({ icon: Icon, title, copy }, index) => <article key={title} className="border-t border-[#10283B]/12 py-7"><span className="grid h-11 w-11 place-items-center rounded-xl bg-[#E9F0F0] text-[#0E867E]"><Icon size={21} /></span><p className="mt-6 font-mono text-[10px] uppercase tracking-[0.15em] text-[#486170]">0{index + 1}</p><h3 className="mt-2 text-xl font-extrabold tracking-[-0.045em]">{title}</h3><p className="mt-3 max-w-sm text-sm leading-6 text-[#486170]">{copy}</p></article>)}</div>
       </section>
 
+      <section className="mx-auto max-w-[1280px] px-5 pb-20 sm:px-8 sm:pb-28">
+        <SurveyBuilderPreview />
+      </section>
+
       <section className="border-y border-[#10283B]/8 bg-[#E9F0F0] py-20 sm:py-28" aria-labelledby="blueprint-heading">
         <div className="mx-auto max-w-[1280px] px-5 sm:px-8"><div className="grid gap-10 lg:grid-cols-[0.8fr_1.2fr]"><div><TinyTag>Future platform structure</TinyTag><h2 id="blueprint-heading" className="mt-6 text-balance text-4xl font-extrabold leading-[1.02] tracking-[-0.065em] sm:text-5xl">A platform built around the customer loop.</h2><p className="mt-6 max-w-md text-lg leading-8 text-[#486170]">The future app has four clear spaces: collect the right feedback, understand it in context, recover with ownership, and improve the journey.</p></div><div className="grid gap-4 sm:grid-cols-2">{blueprint.map(([number, title, copy]) => <article key={number} className="rounded-3xl bg-white p-6 shadow-[0_10px_30px_rgba(16,40,59,0.06)]"><p className="font-mono text-xs text-[#0E867E]">{number}</p><h3 className="mt-8 text-2xl font-extrabold tracking-[-0.055em]">{title}</h3><p className="mt-3 text-sm leading-6 text-[#486170]">{copy}</p><div className="mt-8 h-px w-full bg-[#10283B]/10" /><span className="mt-4 inline-flex items-center gap-2 text-xs font-bold text-[#10283B]">Explore the structure <ArrowRight size={14} /></span></article>)}</div></div></div>
       </section>
@@ -241,7 +309,7 @@ export default function Home() {
 
       <section id="waitlist" className="bg-[#0E867E] py-20 sm:py-28" aria-labelledby="waitlist-heading">
         <div className="mx-auto grid max-w-[1040px] gap-10 px-5 sm:px-8 lg:grid-cols-[0.9fr_1.1fr] lg:items-center"><div className="text-white"><p className="font-mono text-[10px] uppercase tracking-[0.16em] text-white/65">Early access</p><h2 id="waitlist-heading" className="mt-5 text-balance text-4xl font-extrabold leading-[1.02] tracking-[-0.065em] sm:text-5xl">Make feedback easier to act on.</h2><p className="mt-5 max-w-md text-lg leading-8 text-white/78">Join the early-access list. Tell us where you need more customer clarity and we’ll share the right next conversation.</p></div>
-          <form onSubmit={submitWaitlist} className="rounded-[26px] bg-white p-5 shadow-[0_22px_44px_rgba(6,80,75,0.22)] sm:p-7"><div className="grid gap-4 sm:grid-cols-2"><label className="text-xs font-bold text-[#10283B]">Name <input value={form.name} onChange={event => setForm(current => ({ ...current, name: event.target.value }))} maxLength={120} className="mt-2 w-full rounded-xl border border-[#10283B]/15 bg-[#FBFAF7] px-4 py-3 text-sm outline-none transition-colors focus:border-[#0E867E]" placeholder="Your name" /></label><label className="text-xs font-bold text-[#10283B]">Company <input value={form.company} onChange={event => setForm(current => ({ ...current, company: event.target.value }))} maxLength={160} className="mt-2 w-full rounded-xl border border-[#10283B]/15 bg-[#FBFAF7] px-4 py-3 text-sm outline-none transition-colors focus:border-[#0E867E]" placeholder="Your company" /></label></div><label className="mt-4 block text-xs font-bold text-[#10283B]">Work email <input required type="email" value={form.email} onChange={event => setForm(current => ({ ...current, email: event.target.value }))} maxLength={320} className="mt-2 w-full rounded-xl border border-[#10283B]/15 bg-[#FBFAF7] px-4 py-3 text-sm outline-none transition-colors focus:border-[#0E867E]" placeholder="you@company.com" /></label><button disabled={joinWaitlist.isPending} className="mt-5 inline-flex w-full items-center justify-center gap-2 rounded-xl bg-[#10283B] px-5 py-3.5 text-sm font-extrabold text-white transition-colors hover:bg-[#0b5f63] disabled:cursor-wait disabled:opacity-70">{joinWaitlist.isPending ? "Saving your place…" : "Request early access"}<ArrowRight size={16} /></button>{formMessage && <p className="mt-4 text-center text-sm font-semibold text-[#0E867E]" role="status">{formMessage}</p>}<p className="mt-4 text-center text-[11px] leading-5 text-[#486170]">By joining, you agree to hear from Lumae about early access. No spam, no fabricated promises.</p></form>
+          <form onSubmit={submitWaitlist} className="rounded-[26px] bg-white p-5 shadow-[0_22px_44px_rgba(6,80,75,0.22)] sm:p-7"><div className="grid gap-4 sm:grid-cols-2"><label className="text-xs font-bold text-[#10283B]">Name <input value={form.name} onChange={event => setForm(current => ({ ...current, name: event.target.value }))} maxLength={120} className="mt-2 w-full rounded-xl border border-[#10283B]/15 bg-[#FBFAF7] px-4 py-3 text-sm outline-none transition-colors focus:border-[#0E867E]" placeholder="Your name" /></label><label className="text-xs font-bold text-[#10283B]">Company <input value={form.company} onChange={event => setForm(current => ({ ...current, company: event.target.value }))} maxLength={160} className="mt-2 w-full rounded-xl border border-[#10283B]/15 bg-[#FBFAF7] px-4 py-3 text-sm outline-none transition-colors focus:border-[#0E867E]" placeholder="Your company" /></label></div><div className="mt-4 grid gap-4 sm:grid-cols-2"><label className="text-xs font-bold text-[#10283B]">Industry <select required value={form.industry} onChange={event => setForm(current => ({ ...current, industry: event.target.value as IndustryValue }))} className="mt-2 w-full rounded-xl border border-[#10283B]/15 bg-[#FBFAF7] px-4 py-3 text-sm outline-none transition-colors focus:border-[#0E867E]"><option value="" disabled>Select industry</option>{industryOptions.map(([value, label]) => <option key={value} value={value}>{label}</option>)}</select></label><label className="text-xs font-bold text-[#10283B]">Company size <select required value={form.companySize} onChange={event => setForm(current => ({ ...current, companySize: event.target.value as CompanySizeValue }))} className="mt-2 w-full rounded-xl border border-[#10283B]/15 bg-[#FBFAF7] px-4 py-3 text-sm outline-none transition-colors focus:border-[#0E867E]"><option value="" disabled>Select size</option>{companySizeOptions.map(([value, label]) => <option key={value} value={value}>{label}</option>)}</select></label></div><label className="mt-4 block text-xs font-bold text-[#10283B]">Work email <input required type="email" value={form.email} onChange={event => setForm(current => ({ ...current, email: event.target.value }))} maxLength={320} className="mt-2 w-full rounded-xl border border-[#10283B]/15 bg-[#FBFAF7] px-4 py-3 text-sm outline-none transition-colors focus:border-[#0E867E]" placeholder="you@company.com" /></label><button disabled={joinWaitlist.isPending} className="mt-5 inline-flex w-full items-center justify-center gap-2 rounded-xl bg-[#10283B] px-5 py-3.5 text-sm font-extrabold text-white transition-colors hover:bg-[#0b5f63] disabled:cursor-wait disabled:opacity-70">{joinWaitlist.isPending ? "Saving your place…" : "Request early access"}<ArrowRight size={16} /></button>{formMessage && <p className="mt-4 text-center text-sm font-semibold text-[#0E867E]" role="status">{formMessage}</p>}<p className="mt-4 text-center text-[11px] leading-5 text-[#486170]">By joining, you agree to hear from Lumae about early access. No spam, no fabricated promises.</p></form>
         </div>
       </section>
 

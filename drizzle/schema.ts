@@ -19,6 +19,8 @@ export const earlyAccessSignups = mysqlTable("early_access_signups", {
   email: varchar("email", { length: 320 }).notNull().unique(),
   name: varchar("name", { length: 120 }),
   company: varchar("company", { length: 160 }),
+  industry: varchar("industry", { length: 80 }).notNull(),
+  companySize: varchar("companySize", { length: 40 }).notNull(),
   createdAt: timestamp("createdAt").defaultNow().notNull(),
 });
 

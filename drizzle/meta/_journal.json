@@ -15,6 +15,13 @@
       "when": 1786684510219,
       "tag": "0001_polite_human_robot",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "5",
+      "when": 1786691496504,
+      "tag": "0002_solid_nuke",
+      "breakpoints": true
     }
   ]
 }
