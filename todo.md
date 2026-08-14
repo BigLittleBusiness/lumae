@@ -27,3 +27,7 @@
 - [x] Add compact, legible mobile labels for the hero dashboard callouts.
 - [x] Add an interactive homepage ROI calculator with transparent, editable assumptions and clearly labelled estimates.
 - [x] Add unit tests for ROI-calculator calculations and verify calculator and callout layouts at desktop and mobile sizes.
+- [x] Remove named competitor comparisons and pricing commentary from the public marketing page.
+- [x] Add an original Why Lumae section focused on transparent AUD pricing, action-led recovery, ANZ-first usability, and the feedback-to-action loop.
+- [x] Verify the revised public positioning at desktop and mobile sizes, then run the test and type-check suite.
+- [x] Make the Why Lumae section explicitly explain ANZ-first usability and local operating fit, then re-verify its responsive presentation.

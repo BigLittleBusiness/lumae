@@ -47,14 +47,6 @@ const navItems = [
   ["Brand", "#brand"],
 ] as const;
 
-const competitors = [
-  { name: "Delighted", url: "https://delighted.com/", years: "2014 launch · 12 yrs", monthly: "Unavailable", annual: "Unavailable", note: "No longer available; redirected to Qualtrics." },
-  { name: "SurveyMonkey CX", url: "https://www.surveymonkey.com/product/enterprise/", years: "1999 · 27 yrs", monthly: "SGD 49/user*", annual: "SGD 588/user*", note: "3-user minimum; annual billing. CX is sales-led." },
-  { name: "Medallia", url: "https://www.medallia.com/", years: "2001 · 25 yrs", monthly: "Not disclosed", annual: "Custom annual tiers", note: "Experience Data Record model; unlimited users." },
-  { name: "Qualtrics", url: "https://www.qualtrics.com/", years: "2002 · 24 yrs", monthly: "US$420", annual: "US$5,040", note: "Strategic Research self-serve; broader CX is quote-led." },
-  { name: "AskNicely", url: "https://www.asknicely.com/", years: "2014 · 12 yrs", monthly: "Not published", annual: "Annual contract", note: "Response-volume based; pricing is sales-led." },
-];
-
 const marketSegments = [
   { code: "01", title: "Financial services", metric: "111,373", label: "AFCA complaints in 2025", copy: "Feedback and complaint data can become a single service-recovery view for customer, conduct-risk, and digital teams.", source: "https://www.afca.org.au/news/media-releases/afca-receives-record-number-of-complaints-in-2025-calendar-year" },
   { code: "02", title: "Healthcare", metric: "26.6%", label: "delayed or missed a needed GP visit", copy: "Measure care journeys after appointments, discharge, telehealth, or a complaint with a governance-ready feedback loop.", source: "https://www.abs.gov.au/statistics/health/health-services/patient-experiences/latest-release" },
@@ -347,7 +339,7 @@ export default function Home() {
         </div>
       </section>
 
-      <section id="why-lumae" className="border-b border-[#10283B]/8 bg-white py-9" aria-label="Market evidence">
+      <section id="market-signals" className="border-b border-[#10283B]/8 bg-white py-9" aria-label="Market evidence">
         <div className="mx-auto grid max-w-[1280px] gap-8 px-5 sm:grid-cols-3 sm:px-8">
           <a href="https://www.afca.org.au/news/media-releases/afca-receives-record-number-of-complaints-in-2025-calendar-year" target="_blank" rel="noreferrer" className="group flex items-center gap-4"><span className="font-mono text-2xl font-medium tracking-[-0.08em] text-[#0E867E]">111,373</span><span className="border-l border-[#10283B]/12 pl-4 text-xs leading-5 text-[#486170] group-hover:text-[#10283B]">Financial-services complaints received by AFCA in 2025</span></a>
           <a href="https://www.abs.gov.au/statistics/health/health-services/patient-experiences/latest-release" target="_blank" rel="noreferrer" className="group flex items-center gap-4"><span className="font-mono text-2xl font-medium tracking-[-0.08em] text-[#0E867E]">26.6%</span><span className="border-l border-[#10283B]/12 pl-4 text-xs leading-5 text-[#486170] group-hover:text-[#10283B]">Delayed or missed a needed GP visit in Australia, 2024–25</span></a>
@@ -363,10 +355,35 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="bg-[#10283B] py-20 text-white sm:py-28" aria-labelledby="competitor-heading">
-        <div className="mx-auto max-w-[1280px] px-5 sm:px-8"><div className="flex flex-col justify-between gap-8 md:flex-row md:items-end"><div><TinyTag><span className="h-1.5 w-1.5 rounded-full bg-[#0E867E]" />Market context</TinyTag><h2 id="competitor-heading" className="mt-6 max-w-2xl text-balance text-4xl font-extrabold leading-[1.02] tracking-[-0.065em] sm:text-5xl">A mature category with an opening for clarity.</h2></div><p className="max-w-sm text-sm leading-6 text-white/65">Public pricing varies widely across the named platforms. Where a provider sells by quote or does not publish a dollar amount, we say so.</p></div>
-          <div className="mt-12 overflow-x-auto rounded-2xl border border-white/12"><table className="min-w-[860px] w-full text-left"><thead className="bg-white/6 font-mono text-[10px] uppercase tracking-[0.13em] text-white/55"><tr><th className="px-5 py-4">Platform</th><th className="px-5 py-4">Years active</th><th className="px-5 py-4">Public monthly</th><th className="px-5 py-4">Public annual</th><th className="px-5 py-4">Context</th></tr></thead><tbody className="divide-y divide-white/10">{competitors.map(row => <tr key={row.name} className="transition-colors hover:bg-white/[0.035]"><td className="px-5 py-5"><a href={row.url} target="_blank" rel="noreferrer" className="font-bold underline decoration-white/25 underline-offset-4 hover:decoration-[#0E867E]">{row.name}</a></td><td className="px-5 py-5 text-sm text-white/70">{row.years}</td><td className="px-5 py-5 font-mono text-sm text-white">{row.monthly}</td><td className="px-5 py-5 font-mono text-sm text-white">{row.annual}</td><td className="px-5 py-5 text-sm text-white/62">{row.note}</td></tr>)}</tbody></table></div>
-          <p className="mt-4 text-xs leading-5 text-white/48">* SurveyMonkey pricing was displayed in SGD on its location-served public pricing page on 14 August 2026; the annual equivalent is calculated from the published SGD 49 per-user monthly rate and annual billing. No currency conversion has been applied. Sources: official product and pricing pages linked above.</p>
+      <section id="why-lumae" className="bg-[#10283B] py-20 text-white sm:py-28" aria-labelledby="why-heading">
+        <div className="mx-auto max-w-[1280px] px-5 sm:px-8">
+          <div className="grid gap-8 lg:grid-cols-[0.9fr_1.1fr] lg:items-end">
+            <div>
+              <TinyTag><span className="h-1.5 w-1.5 rounded-full bg-[#0E867E]" />Why Lumae</TinyTag>
+              <h2 id="why-heading" className="mt-6 max-w-2xl text-balance text-4xl font-extrabold leading-[1.02] tracking-[-0.065em] sm:text-5xl">Feedback should lead somewhere useful.</h2>
+            </div>
+            <p className="max-w-xl text-lg leading-8 text-white/68">Lumae is shaped for the work that happens after a score: understanding the moment, making follow-up visible, and giving teams a clearer way to improve the next customer interaction.</p>
+          </div>
+
+          <div className="mt-12 grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+            {[
+              ["01", "Clear by design", "Straightforward AUD plans and a practical product path help teams understand what they are adopting before they scale."],
+              ["02", "Action has an owner", "Connect feedback to the right customer, journey, and responsible person so a score can become a considered next step."],
+              ["03", "ANZ-first, practical by default", "Use local-currency plans and an interface shaped around privacy-aware, consent-conscious service workflows familiar to ANZ teams."],
+              ["04", "One feedback operating loop", "Bring collection, context, response, and reporting into a focused workflow that makes customer learning easier to use."],
+            ].map(([number, title, copy]) => (
+              <article key={number} className="rounded-3xl border border-white/12 bg-white/[0.055] p-6 transition-colors hover:bg-white/[0.09]">
+                <p className="font-mono text-[10px] uppercase tracking-[0.16em] text-[#69d7ce]">{number}</p>
+                <h3 className="mt-8 text-2xl font-extrabold tracking-[-0.055em]">{title}</h3>
+                <p className="mt-4 text-sm leading-6 text-white/65">{copy}</p>
+              </article>
+            ))}
+          </div>
+
+          <div className="mt-8 flex flex-col justify-between gap-5 border-t border-white/12 pt-7 sm:flex-row sm:items-center">
+            <p className="max-w-2xl text-sm leading-6 text-white/55">The platform direction remains centred on practical measurement, accountable recovery, and customer context—not comparison with other providers.</p>
+            <a href="#waitlist" className="inline-flex shrink-0 items-center justify-center gap-2 rounded-full bg-[#0E867E] px-5 py-3 text-sm font-extrabold text-white transition-colors hover:bg-[#0a746d]">See what Lumae can enable <ArrowRight size={16} /></a>
+          </div>
         </div>
       </section>
 
