@@ -19,3 +19,5 @@ The desktop browser reports a fine hover-capable pointer and exposes the enhance
 The first capability card was brought into the desktop viewport and hovered directly; its elevated card treatment and teal benefit emphasis rendered as intended while the compact scroll navigation remained accessible.
 
 Computed desktop hover state confirmed the expected `translateY(-5px)` elevation, white card background, and Tidal Teal icon and heading. The page exposed six `hero-arrive` animations, each with a 560ms duration and staggered 70–310ms delay; all had finished and the hero parts had settled into their final state.
+
+The ROI calculator rendered all six editable assumptions. Doubling the monthly touchpoint scenario from 1,000 to 2,000 updated the illustrative annual retained-value display from A$108,000 to A$216,000, with actionable responses and potential recoveries also updating proportionally.

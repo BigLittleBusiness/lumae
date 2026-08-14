@@ -24,3 +24,6 @@
 - [x] Test the new motion and navigation behaviour on desktop and mobile, then confirm no client-side errors.
 - [x] Explicitly confirm the hero entrance, desktop hover effect, scroll navigation, and mobile fallback behaviour before release.
 - [x] Repair the clipped hero dashboard callouts and ensure the visual remains fully visible at desktop and mobile breakpoints.
+- [x] Add compact, legible mobile labels for the hero dashboard callouts.
+- [x] Add an interactive homepage ROI calculator with transparent, editable assumptions and clearly labelled estimates.
+- [x] Add unit tests for ROI-calculator calculations and verify calculator and callout layouts at desktop and mobile sizes.

@@ -20,8 +20,24 @@ import {
   X,
 } from "lucide-react";
 import { trpc } from "@/lib/trpc";
+import { calculateRoi, type RoiInputs } from "@/lib/roi";
 
 const logoUrl = "/manus-storage/lumae-logo-mark_b397bb7a.png";
+
+const defaultRoiInputs: RoiInputs = {
+  monthlyTouchpoints: 1000,
+  annualCustomerValue: 1200,
+  responseRatePercent: 20,
+  actionableRatePercent: 15,
+  recoveryRatePercent: 25,
+  annualPlatformCost: 2628,
+};
+
+const aud = new Intl.NumberFormat("en-AU", {
+  style: "currency",
+  currency: "AUD",
+  maximumFractionDigits: 0,
+});
 
 const navItems = [
   ["Why Lumae", "#why-lumae"],
@@ -123,6 +139,77 @@ function SurveyBuilderPreview() {
             <button className="mt-7 w-full rounded-xl bg-[#10283B] py-3 text-sm font-extrabold text-white">Continue</button>
           </div>
           <div className="relative mt-5 flex flex-wrap items-center justify-between gap-3 rounded-xl border border-[#10283B]/10 bg-white/70 px-4 py-3 font-mono text-[10px] uppercase tracking-[0.12em] text-[#486170]"><span>Question type · CSAT scale</span><span className="text-[#0E867E]">Preview active</span></div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function RoiCalculator() {
+  const [inputs, setInputs] = useState<RoiInputs>(defaultRoiInputs);
+  const result = calculateRoi(inputs);
+  const updateInput = (field: keyof RoiInputs, value: string) => {
+    const parsed = Number(value);
+    setInputs(previous => ({ ...previous, [field]: Number.isFinite(parsed) ? parsed : 0 }));
+  };
+
+  const numberField = (
+    label: string,
+    field: keyof RoiInputs,
+    suffix: string,
+    min: number,
+    step: number,
+  ) => (
+    <label className="block rounded-xl border border-[#10283B]/10 bg-white px-3 py-3 text-xs font-bold text-[#10283B]">
+      <span className="block leading-4 text-[#486170]">{label}</span>
+      <span className="mt-2 flex items-center gap-1">
+        <input
+          type="number"
+          min={min}
+          step={step}
+          value={inputs[field]}
+          onChange={event => updateInput(field, event.target.value)}
+          className="min-w-0 flex-1 bg-transparent font-mono text-base font-semibold outline-none focus:text-[#0E867E]"
+          aria-label={label}
+        />
+        <span className="font-mono text-[10px] text-[#486170]">{suffix}</span>
+      </span>
+    </label>
+  );
+
+  return (
+    <section id="roi-calculator" className="border-y border-[#10283B]/8 bg-white py-20 sm:py-28" aria-labelledby="roi-heading">
+      <div className="mx-auto grid max-w-[1280px] gap-10 px-5 sm:px-8 lg:grid-cols-[0.86fr_1.14fr] lg:items-start lg:gap-16">
+        <div>
+          <TinyTag>Interactive ROI scenario</TinyTag>
+          <h2 id="roi-heading" className="mt-6 text-balance text-4xl font-extrabold leading-[1.02] tracking-[-0.065em] sm:text-5xl">Make the value conversation concrete.</h2>
+          <p className="mt-6 max-w-lg text-lg leading-8 text-[#486170]">Use your own assumptions to explore the potential annual customer value of responding to feedback earlier. Every field is editable.</p>
+          <div className="mt-7 rounded-2xl border border-[#0E867E]/20 bg-[#e4f4f1] p-5 text-sm leading-6 text-[#486170]">
+            <p className="font-bold text-[#10283B]">How this estimate works</p>
+            <p className="mt-2">Monthly customer touchpoints × response rate × actionable share × recovery rate × annual customer value × 12.</p>
+          </div>
+        </div>
+
+        <div className="rounded-[30px] border border-[#10283B]/12 bg-[#FBFAF7] p-4 shadow-[0_20px_45px_rgba(16,40,59,0.08)] sm:p-6">
+          <div className="grid gap-3 sm:grid-cols-2">
+            {numberField("Customer touchpoints", "monthlyTouchpoints", "/ month", 0, 50)}
+            {numberField("Average customer value", "annualCustomerValue", "A$ / year", 0, 100)}
+            {numberField("Expected response rate", "responseRatePercent", "%", 0, 1)}
+            {numberField("Feedback that needs action", "actionableRatePercent", "%", 0, 1)}
+            {numberField("Issues you could recover", "recoveryRatePercent", "%", 0, 1)}
+            {numberField("Annual platform investment", "annualPlatformCost", "A$", 0, 100)}
+          </div>
+
+          <div className="mt-5 rounded-2xl bg-[#10283B] p-5 text-white sm:p-6">
+            <p className="font-mono text-[10px] uppercase tracking-[0.15em] text-white/55">Illustrative annual customer value retained</p>
+            <p className="mt-3 text-4xl font-extrabold tracking-[-0.07em] sm:text-5xl">{aud.format(result.annualRetainedValue)}</p>
+            <div className="mt-6 grid gap-3 border-t border-white/12 pt-5 sm:grid-cols-3">
+              <div><p className="font-mono text-[10px] uppercase tracking-[0.12em] text-white/55">Actionable responses</p><p className="mt-2 text-xl font-extrabold">{Math.round(result.actionableResponses).toLocaleString("en-AU")}</p></div>
+              <div><p className="font-mono text-[10px] uppercase tracking-[0.12em] text-white/55">Potential recoveries</p><p className="mt-2 text-xl font-extrabold">{Math.round(result.recoveredOutcomes).toLocaleString("en-AU")}</p></div>
+              <div><p className="font-mono text-[10px] uppercase tracking-[0.12em] text-white/55">Value multiple</p><p className="mt-2 text-xl font-extrabold">{result.valueMultiple > 0 ? `${result.valueMultiple.toFixed(1)}×` : "—"}</p></div>
+            </div>
+            <p className="mt-6 border-t border-white/12 pt-4 text-xs leading-5 text-white/62">Net of the editable annual platform investment: <span className="font-bold text-white">{aud.format(result.netIllustrativeValue)}</span>. This is an illustrative scenario, not a forecast or a guarantee of outcomes.</p>
+          </div>
         </div>
       </div>
     </section>
@@ -254,8 +341,8 @@ export default function Home() {
                 </div>
               </div>
             </div>
-            <div className="float-soft absolute bottom-0 left-3 rounded-2xl border border-[#10283B]/8 bg-white px-4 py-3 shadow-[0_16px_32px_rgba(16,40,59,0.13)] sm:left-5"><div className="flex items-center gap-3"><span className="grid h-9 w-9 place-items-center rounded-xl bg-[#fbe0da]"><BellRing size={17} className="text-[#E96E59]" /></span><div><p className="text-xs font-extrabold">A signal needs care</p><p className="mt-0.5 text-[11px] text-[#486170]">Owner assigned · 2 min ago</p></div></div></div>
-            <div className="float-delayed absolute right-3 top-12 rounded-2xl border border-white/30 bg-[#0E867E] px-4 py-3 text-white shadow-[0_16px_32px_rgba(14,134,126,0.25)] sm:right-5"><p className="font-mono text-[10px] uppercase tracking-[0.14em] text-white/70">CSAT</p><p className="mt-1 text-2xl font-extrabold tracking-[-0.06em]">94.2%</p></div>
+            <div className="float-soft absolute bottom-0 left-3 rounded-2xl border border-[#10283B]/8 bg-white px-3 py-2.5 shadow-[0_16px_32px_rgba(16,40,59,0.13)] sm:left-5 sm:px-4 sm:py-3"><div className="flex items-center gap-2 sm:gap-3"><span className="grid h-7 w-7 place-items-center rounded-lg bg-[#fbe0da] sm:h-9 sm:w-9 sm:rounded-xl"><BellRing size={15} className="text-[#E96E59] sm:hidden" /><BellRing size={17} className="hidden text-[#E96E59] sm:block" /></span><div><p className="text-[11px] font-extrabold sm:text-xs"><span className="sm:hidden">Action needed</span><span className="hidden sm:inline">A signal needs care</span></p><p className="mt-0.5 hidden text-[11px] text-[#486170] sm:block">Owner assigned · 2 min ago</p></div></div></div>
+            <div className="float-delayed absolute right-2 top-8 rounded-xl border border-white/30 bg-[#0E867E] px-2.5 py-2 text-white shadow-[0_16px_32px_rgba(14,134,126,0.25)] sm:right-5 sm:top-12 sm:rounded-2xl sm:px-4 sm:py-3"><p className="font-mono text-[9px] uppercase tracking-[0.14em] text-white/70 sm:text-[10px]">CSAT</p><p className="mt-0.5 text-xl font-extrabold tracking-[-0.06em] sm:mt-1 sm:text-2xl">94.2%</p></div>
           </div>
         </div>
       </section>
@@ -291,6 +378,8 @@ export default function Home() {
       <section className="mx-auto max-w-[1280px] px-5 pb-20 sm:px-8 sm:pb-28">
         <SurveyBuilderPreview />
       </section>
+
+      <RoiCalculator />
 
       <section className="border-y border-[#10283B]/8 bg-[#E9F0F0] py-20 sm:py-28" aria-labelledby="blueprint-heading">
         <div className="mx-auto max-w-[1280px] px-5 sm:px-8"><div className="grid gap-10 lg:grid-cols-[0.8fr_1.2fr]"><div><TinyTag>Future platform structure</TinyTag><h2 id="blueprint-heading" className="mt-6 text-balance text-4xl font-extrabold leading-[1.02] tracking-[-0.065em] sm:text-5xl">A platform built around the customer loop.</h2><p className="mt-6 max-w-md text-lg leading-8 text-[#486170]">The future app has four clear spaces: collect the right feedback, understand it in context, recover with ownership, and improve the journey.</p></div><div className="grid gap-4 sm:grid-cols-2">{blueprint.map(([number, title, copy]) => <article key={number} className="rounded-3xl bg-white p-6 shadow-[0_10px_30px_rgba(16,40,59,0.06)]"><p className="font-mono text-xs text-[#0E867E]">{number}</p><h3 className="mt-8 text-2xl font-extrabold tracking-[-0.055em]">{title}</h3><p className="mt-3 text-sm leading-6 text-[#486170]">{copy}</p><div className="mt-8 h-px w-full bg-[#10283B]/10" /><span className="mt-4 inline-flex items-center gap-2 text-xs font-bold text-[#10283B]">Explore the structure <ArrowRight size={14} /></span></article>)}</div></div></div>
