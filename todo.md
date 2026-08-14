@@ -1,0 +1,14 @@
+# Project TODO
+
+- [x] Validate source-backed competitor profiles, pricing, URLs, and years active for Delighted, SurveyMonkey CX, Medallia, Qualtrics, and AskNicely.
+- [x] Research ANZ CX-survey market viability and prioritise financial services, healthcare, professional services, retail, and SaaS/technology based on adoption opportunity.
+- [x] Define a research-led platform name, domain recommendation, positioning, colour system, typography, logo direction, and embedded brand-guideline summary.
+- [x] Define an initial product blueprint covering survey creation, distribution, analytics, segmentation, integrations, branding, access control, and future application pages.
+- [x] Define three small-business-to-mid-market pricing tiers with monthly and annual presentation and feature comparison.
+- [x] Build a premium responsive landing page with hero CTAs, research sections, product capabilities, pricing, platform blueprint, brand identity, trust statement, navigation, and footer.
+- [x] Implement a database-backed early-access waitlist with input validation, success and error states, and a public tRPC procedure.
+- [x] Use only factual competitor information and avoid invented testimonials, ratings, customer stories, or partner/customer logos.
+- [x] Add unit tests for waitlist validation and persistence behaviour, then run the complete test and type-check suite.
+- [x] Verify desktop and mobile rendering, update this checklist, and create the first complete project checkpoint.
+- [x] Document source-backed ANZ B2B SaaS visual-language research and record that domain/trade-mark clearance remains an external pre-launch requirement.
+- [x] Create an explicit three-tier feature-comparison matrix for the landing page alongside the monthly and annual price presentation.
