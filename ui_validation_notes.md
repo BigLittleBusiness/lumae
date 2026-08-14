@@ -21,3 +21,9 @@ The first capability card was brought into the desktop viewport and hovered dire
 Computed desktop hover state confirmed the expected `translateY(-5px)` elevation, white card background, and Tidal Teal icon and heading. The page exposed six `hero-arrive` animations, each with a 560ms duration and staggered 70–310ms delay; all had finished and the hero parts had settled into their final state.
 
 The ROI calculator rendered all six editable assumptions. Doubling the monthly touchpoint scenario from 1,000 to 2,000 updated the illustrative annual retained-value display from A$108,000 to A$216,000, with actionable responses and potential recoveries also updating proportionally.
+
+Interactive workflow validation confirmed that the healthcare, professional services, retail, and SaaS & technology tabs each replaced the workflow title and all four steps with their relevant illustrative scenario. The selector reset to step 1 on industry change, while the visible step indicator progressed from step 1 to step 2 during the page session. Financial services rendered as the initial selected workflow.
+
+The financial-services tab was also explicitly reselected and restored its digital-onboarding workflow and four relevant steps. Full-page desktop and 390px mobile captures confirmed that the tab set and four-step workflow presentation remain responsive at both breakpoints.
+
+Explicit browser device emulation at 390px confirmed that each workflow tab—financial services, healthcare, professional services, retail, and SaaS & technology—became selected, displayed its correct scenario title, and rendered exactly four workflow steps.

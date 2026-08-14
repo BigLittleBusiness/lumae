@@ -33,3 +33,11 @@
 - [x] Make the Why Lumae section explicitly explain ANZ-first usability and local operating fit, then re-verify its responsive presentation.
 - [x] Refine all four Why Lumae value pillars with customer-centric, buyer-interview-style language.
 - [x] Add a concrete, original feedback-to-action workflow example beneath the Why Lumae pillars.
+- [x] Add selectable workflow examples for financial services, healthcare, professional services, retail, and SaaS/technology.
+- [x] Add a subtle, reduced-motion-aware step progression animation to the workflow example.
+- [x] Test workflow selection, animation behaviour, and responsive layouts across desktop and mobile.
+- [x] Manually verify every industry workflow tab and its copy on desktop and mobile, then record the results.
+- [x] Add integration coverage for industry selection, active-step progression, and the reduced-motion fallback.
+- [x] Exercise all five workflow tabs in a mobile-sized browser context and record that each swaps its title and four steps.
+- [x] Add a rendered UI integration test for industry selection, active-step state, and reduced-motion behaviour.
+- [x] Exercise all five workflow tabs in an explicitly mobile-sized browser session and record their updated title and steps.

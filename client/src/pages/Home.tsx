@@ -1,4 +1,5 @@
 import { FormEvent, useEffect, useState } from "react";
+import React from "react";
 import {
   ArrowDownRight,
   ArrowRight,
@@ -21,6 +22,7 @@ import {
 } from "lucide-react";
 import { trpc } from "@/lib/trpc";
 import { calculateRoi, type RoiInputs } from "@/lib/roi";
+import { advanceWorkflowStep, selectWorkflow, shouldAutoAdvanceWorkflow } from "@/lib/workflow";
 
 const logoUrl = "/manus-storage/lumae-logo-mark_b397bb7a.png";
 
@@ -94,8 +96,69 @@ const companySizeOptions = [
   ["501_plus", "501+ people"],
 ] as const;
 
+const workflowExamples = {
+  financial_services: {
+    label: "Financial services",
+    title: "A concern during digital onboarding",
+    description: "Illustrative example: a customer flags friction after setting up an account or service.",
+    steps: [
+      ["Capture the moment", "A customer gives a low score after a digital onboarding interaction and adds a short comment."],
+      ["See the relevant context", "The response is viewed alongside the journey, service channel, and the details a team needs to assess the concern."],
+      ["Assign the next step", "A responsible service owner receives a clear follow-up task with the response and its context."],
+      ["Record what changed", "The outcome is captured so teams can spot recurring friction and improve the onboarding experience."],
+    ],
+  },
+  healthcare: {
+    label: "Healthcare",
+    title: "A concern after an appointment",
+    description: "Illustrative example: a patient shares feedback about an appointment experience.",
+    steps: [
+      ["Capture the experience", "A patient gives a low score after an appointment and chooses to share a comment."],
+      ["Keep the service context", "The feedback is grouped with the relevant care journey and service location without requiring clinical detail in the workflow."],
+      ["Route it with care", "The appropriate experience or service owner receives a follow-up task and the context needed to respond."],
+      ["Learn for the next visit", "The team records the follow-up outcome and can identify themes that deserve service improvement."],
+    ],
+  },
+  professional_services: {
+    label: "Professional services",
+    title: "A client signals concern after a milestone",
+    description: "Illustrative example: a client reflects on a completed project milestone or service interaction.",
+    steps: [
+      ["Ask at the right moment", "A client shares a low score after a milestone, review, or meaningful service interaction."],
+      ["Bring the relationship into view", "The response is considered with the client relationship, service phase, and the context behind the feedback."],
+      ["Give a leader a clear task", "The relevant relationship or practice lead receives a discreet, actionable follow-up."],
+      ["Protect the next conversation", "The response and outcome inform the next client conversation instead of being lost in an after-action report."],
+    ],
+  },
+  retail: {
+    label: "Retail",
+    title: "A delivery experience needs attention",
+    description: "Illustrative example: a shopper shares feedback after delivery, collection, or a return.",
+    steps: [
+      ["Capture the signal", "A shopper gives a low score after a delivery, collection, return, or support interaction."],
+      ["Understand the journey", "The response is grouped with the relevant service moment, channel, and location or fulfilment context."],
+      ["Make recovery visible", "A customer-care owner receives the signal with enough information to decide on the next best response."],
+      ["Improve the repeated moment", "The team records the outcome and uses recurring patterns to focus operational improvement."],
+    ],
+  },
+  saas_technology: {
+    label: "SaaS & technology",
+    title: "A support interaction points to friction",
+    description: "Illustrative example: an account user shares feedback after a support interaction.",
+    steps: [
+      ["Listen after support", "An account user gives a low score after a support interaction and explains what did not work."],
+      ["Link the response to the journey", "The feedback sits with the support journey, account context, and relevant product or service area."],
+      ["Coordinate the response", "A support or customer-success owner receives a clear action and can involve the right team when needed."],
+      ["Turn feedback into learning", "The outcome is recorded so service and product teams can see where the same friction returns."],
+    ],
+  },
+} as const;
+
+const workflowIndustries = ["financial_services", "healthcare", "professional_services", "retail", "saas_technology"] as const;
+
 type IndustryValue = (typeof industryOptions)[number][0];
 type CompanySizeValue = (typeof companySizeOptions)[number][0];
+type WorkflowIndustry = (typeof workflowIndustries)[number];
 
 function SurveyBuilderPreview() {
   const [question, setQuestion] = useState("How was your support experience today?");
@@ -134,6 +197,56 @@ function SurveyBuilderPreview() {
         </div>
       </div>
     </section>
+  );
+}
+
+export function IndustryWorkflowExample() {
+  const [industry, setIndustry] = useState<WorkflowIndustry>("financial_services");
+  const [activeStep, setActiveStep] = useState(0);
+  const example = workflowExamples[industry];
+
+  useEffect(() => {
+    setActiveStep(0);
+    if (!shouldAutoAdvanceWorkflow(window.matchMedia("(prefers-reduced-motion: reduce)").matches)) return;
+    const interval = window.setInterval(() => setActiveStep(step => advanceWorkflowStep(step, example.steps.length)), 2600);
+    return () => window.clearInterval(interval);
+  }, [industry, example.steps.length]);
+
+  return (
+    <div className="mt-6 rounded-[28px] border border-white/12 bg-white/[0.045] p-5 sm:p-7">
+      <div className="flex flex-col justify-between gap-4 border-b border-white/12 pb-6 md:flex-row md:items-end">
+        <div>
+          <p className="font-mono text-[10px] uppercase tracking-[0.16em] text-[#69d7ce]">Choose your use case</p>
+          <h3 className="mt-3 text-2xl font-extrabold tracking-[-0.055em] sm:text-3xl">See how the loop works in your world.</h3>
+        </div>
+        <p className="max-w-md text-sm leading-6 text-white/60">Each view is illustrative. Select an industry to follow a feedback signal from the moment it is captured to the learning that follows.</p>
+      </div>
+
+      <div className="mt-6 flex flex-wrap gap-2" role="tablist" aria-label="Industry workflow examples">
+        {workflowIndustries.map(key => {
+          const item = workflowExamples[key];
+          return <button key={key} type="button" role="tab" aria-selected={industry === key} onClick={() => { const selection = selectWorkflow(key); setIndustry(selection.industry); setActiveStep(selection.activeStep); }} className={`rounded-full px-3.5 py-2 text-xs font-bold transition-colors ${industry === key ? "bg-[#0E867E] text-white" : "bg-white/8 text-white/68 hover:bg-white/14 hover:text-white"}`}>{item.label}</button>;
+        })}
+      </div>
+
+      <div className="mt-6 rounded-2xl border border-white/10 bg-[#10283B] p-5 sm:p-6" role="tabpanel">
+        <p className="font-mono text-[10px] uppercase tracking-[0.15em] text-[#69d7ce]">{example.label} workflow</p>
+        <h4 className="mt-2 text-xl font-extrabold tracking-[-0.045em] sm:text-2xl">{example.title}</h4>
+        <p className="mt-2 max-w-2xl text-sm leading-6 text-white/60">{example.description}</p>
+
+        <div className="mt-6 grid gap-4 lg:grid-cols-4">
+          {example.steps.map(([title, copy], index) => (
+            <button key={title} type="button" onClick={() => setActiveStep(index)} className="workflow-step relative rounded-2xl border border-white/10 bg-white/[0.035] p-5 text-left" data-active={activeStep === index} aria-pressed={activeStep === index}>
+              <span className="workflow-step-number font-mono text-[10px] tracking-[0.14em]">0{index + 1}</span>
+              <h5 className="mt-6 text-lg font-extrabold tracking-[-0.045em]">{title}</h5>
+              <p className="mt-3 text-sm leading-6 text-white/62">{copy}</p>
+              {index < example.steps.length - 1 && <ArrowRight size={16} className="workflow-connector absolute -bottom-3 left-1/2 z-10 -translate-x-1/2 rotate-90 rounded-full bg-[#0E867E] p-1 text-white lg:-right-3 lg:bottom-auto lg:left-auto lg:top-1/2 lg:-translate-y-1/2 lg:translate-x-0 lg:rotate-0" />}
+            </button>
+          ))}
+        </div>
+        <p className="mt-5 font-mono text-[10px] uppercase tracking-[0.14em] text-white/45" aria-live="polite">Step {activeStep + 1} of {example.steps.length} highlighted · select a step to pause on its detail</p>
+      </div>
+    </div>
   );
 }
 
@@ -380,30 +493,7 @@ export default function Home() {
             ))}
           </div>
 
-          <div className="mt-6 rounded-[28px] border border-white/12 bg-white/[0.045] p-5 sm:p-7">
-            <div className="flex flex-col justify-between gap-4 border-b border-white/12 pb-6 md:flex-row md:items-end">
-              <div>
-                <p className="font-mono text-[10px] uppercase tracking-[0.16em] text-[#69d7ce]">Illustrative workflow</p>
-                <h3 className="mt-3 text-2xl font-extrabold tracking-[-0.055em] sm:text-3xl">From a low score to a considered follow-up.</h3>
-              </div>
-              <p className="max-w-md text-sm leading-6 text-white/60">A practical example of how a service team could use Lumae after a customer-support interaction.</p>
-            </div>
-            <div className="mt-6 grid gap-4 lg:grid-cols-4">
-              {[
-                ["01", "Capture the moment", "A customer selects 2/5 after a support interaction and adds a short comment."],
-                ["02", "Keep the context", "The response is viewed with the customer, service moment, and relevant details in one place."],
-                ["03", "Give follow-up an owner", "A team member receives a clear next step with enough context to respond with care."],
-                ["04", "Learn from the outcome", "The follow-up outcome is recorded so leaders can see what changed and where patterns recur."],
-              ].map(([number, title, copy], index) => (
-                <div key={number} className="relative rounded-2xl bg-[#10283B] p-5 ring-1 ring-white/10">
-                  <p className="font-mono text-[10px] tracking-[0.14em] text-[#69d7ce]">{number}</p>
-                  <h4 className="mt-6 text-lg font-extrabold tracking-[-0.045em]">{title}</h4>
-                  <p className="mt-3 text-sm leading-6 text-white/62">{copy}</p>
-                  {index < 3 && <ArrowRight size={16} className="absolute -bottom-3 left-1/2 z-10 -translate-x-1/2 rotate-90 rounded-full bg-[#0E867E] p-1 text-white lg:-right-3 lg:bottom-auto lg:left-auto lg:top-1/2 lg:-translate-y-1/2 lg:translate-x-0 lg:rotate-0" />}
-                </div>
-              ))}
-            </div>
-          </div>
+          <IndustryWorkflowExample />
 
           <div className="mt-8 flex flex-col justify-between gap-5 border-t border-white/12 pt-7 sm:flex-row sm:items-center">
             <p className="max-w-2xl text-sm leading-6 text-white/55">The platform direction remains centred on practical measurement, accountable recovery, and customer context—not comparison with other providers.</p>
