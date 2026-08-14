@@ -229,7 +229,7 @@ export default function Home() {
             </div>
           </div>
 
-          <div className="hero-visual hero-intro hero-intro-3 relative mx-auto w-full max-w-[580px] lg:mr-0">
+          <div className="hero-visual hero-intro hero-intro-3 relative mx-auto w-full max-w-[580px] pb-16 lg:mr-0">
             <div className="absolute inset-8 rounded-[42px] border border-dashed border-[#0E867E]/30" />
             <div className="hero-orbit absolute left-[8%] top-[12%] h-[78%] w-[78%] rounded-full border border-[#0E867E]/15" />
             <div className="relative overflow-hidden rounded-[30px] border border-white/80 bg-[#10283B] p-4 shadow-[0_28px_65px_rgba(16,40,59,0.22)] sm:p-5">
@@ -254,8 +254,8 @@ export default function Home() {
                 </div>
               </div>
             </div>
-            <div className="float-soft absolute -bottom-7 -left-4 rounded-2xl border border-[#10283B]/8 bg-white px-4 py-3 shadow-[0_16px_32px_rgba(16,40,59,0.13)] sm:-left-10"><div className="flex items-center gap-3"><span className="grid h-9 w-9 place-items-center rounded-xl bg-[#fbe0da]"><BellRing size={17} className="text-[#E96E59]" /></span><div><p className="text-xs font-extrabold">A signal needs care</p><p className="mt-0.5 text-[11px] text-[#486170]">Owner assigned · 2 min ago</p></div></div></div>
-            <div className="float-delayed absolute -right-3 top-12 rounded-2xl border border-white/30 bg-[#0E867E] px-4 py-3 text-white shadow-[0_16px_32px_rgba(14,134,126,0.25)] sm:-right-9"><p className="font-mono text-[10px] uppercase tracking-[0.14em] text-white/70">CSAT</p><p className="mt-1 text-2xl font-extrabold tracking-[-0.06em]">94.2%</p></div>
+            <div className="float-soft absolute bottom-0 left-3 rounded-2xl border border-[#10283B]/8 bg-white px-4 py-3 shadow-[0_16px_32px_rgba(16,40,59,0.13)] sm:left-5"><div className="flex items-center gap-3"><span className="grid h-9 w-9 place-items-center rounded-xl bg-[#fbe0da]"><BellRing size={17} className="text-[#E96E59]" /></span><div><p className="text-xs font-extrabold">A signal needs care</p><p className="mt-0.5 text-[11px] text-[#486170]">Owner assigned · 2 min ago</p></div></div></div>
+            <div className="float-delayed absolute right-3 top-12 rounded-2xl border border-white/30 bg-[#0E867E] px-4 py-3 text-white shadow-[0_16px_32px_rgba(14,134,126,0.25)] sm:right-5"><p className="font-mono text-[10px] uppercase tracking-[0.14em] text-white/70">CSAT</p><p className="mt-1 text-2xl font-extrabold tracking-[-0.06em]">94.2%</p></div>
           </div>
         </div>
       </section>

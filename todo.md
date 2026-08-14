@@ -23,3 +23,4 @@
 - [x] Add a scroll-aware sticky navigation with persistent access to the early-access form.
 - [x] Test the new motion and navigation behaviour on desktop and mobile, then confirm no client-side errors.
 - [x] Explicitly confirm the hero entrance, desktop hover effect, scroll navigation, and mobile fallback behaviour before release.
+- [x] Repair the clipped hero dashboard callouts and ensure the visual remains fully visible at desktop and mobile breakpoints.
