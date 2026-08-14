@@ -44,6 +44,7 @@
 - [x] Verify the Lumae GitHub remote and configure secure authenticated repository access for this session.
 - [x] Commit all completed Lumae project changes and push them to the configured GitHub repository.
 - [ ] Commit and push each future completed task group to the Lumae GitHub repository.
+- [x] Review the Why Lumae value pillars at mobile breakpoints for typography, spacing, hierarchy, and interaction comfort.
 - [x] Set the Lumae GitHub destination to github.com/BigLittleBusiness/lumae and verify authenticated access before pushing.
 - [x] Switch the Lumae repository to session-scoped GitHub authentication and remove only the Lumae PAT from persistent credential storage without affecting other repositories.
 - [x] Verify that no Lumae credential remains in persistent Git storage and that this repository uses only its session-scoped cache.

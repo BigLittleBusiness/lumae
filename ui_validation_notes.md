@@ -27,3 +27,7 @@ Interactive workflow validation confirmed that the healthcare, professional serv
 The financial-services tab was also explicitly reselected and restored its digital-onboarding workflow and four relevant steps. Full-page desktop and 390px mobile captures confirmed that the tab set and four-step workflow presentation remain responsive at both breakpoints.
 
 Explicit browser device emulation at 390px confirmed that each workflow tab—financial services, healthcare, professional services, retail, and SaaS & technology—became selected, displayed its correct scenario title, and rendered exactly four workflow steps.
+
+Why Lumae mobile review at a 390px viewport: the compact header, eyebrow, two-line section headline, and introductory paragraph all remain legible with clear hierarchy. The first pillar uses comfortable 24px-scale internal padding, a large readable title, and restrained body-copy line length; it does not appear crowded at the top of the section. A lower-section capture is required to confirm the spacing rhythm across all four stacked pillars.
+
+Lower-stack review confirms that the four mobile value pillars have consistent 18–20px gaps, retain comfortable inner padding, and keep headings and paragraph copy legible without collision or truncation. The long third-pillar title wraps cleanly over two lines, while body text maintains a readable measure. The only observed trade-off is intentional vertical length: each value proposition has enough breathing room for comprehension, so no typography or spacing change is recommended at the 390px breakpoint.
