@@ -17,3 +17,9 @@
 - [x] Extend early-access signups with industry and company-size fields across the database schema, server validation, and form experience.
 - [x] Add tests for the expanded lead-capture payload and verify the new page and interactive preview across desktop and mobile.
 - [x] Fix home-page button tremor and any related load-time UI movement.
+- [x] Diagnose and eliminate the remaining hero-image shaking without removing intentional polish.
+- [x] Add a restrained, deliberately timed hero entrance animation that respects reduced-motion preferences.
+- [x] Add subtle feature-card hover elevation and benefit emphasis on desktop pointer devices.
+- [x] Add a scroll-aware sticky navigation with persistent access to the early-access form.
+- [x] Test the new motion and navigation behaviour on desktop and mobile, then confirm no client-side errors.
+- [x] Explicitly confirm the hero entrance, desktop hover effect, scroll navigation, and mobile fallback behaviour before release.

@@ -1,4 +1,4 @@
-import { FormEvent, useState } from "react";
+import { FormEvent, useEffect, useState } from "react";
 import {
   ArrowDownRight,
   ArrowRight,
@@ -150,9 +150,14 @@ function TinyTag({ children }: { children: React.ReactNode }) {
   return <span className="inline-flex items-center gap-1.5 rounded-full border border-[#10283B]/10 bg-white/70 px-3 py-1.5 font-mono text-[10px] uppercase tracking-[0.14em] text-[#486170]">{children}</span>;
 }
 
+function ScrollNavigation({ visible }: { visible: boolean }) {
+  return <div className="scroll-nav fixed left-0 right-0 top-3 z-[70] px-3 sm:px-5" data-visible={visible} aria-hidden={!visible}><div className="mx-auto flex h-14 max-w-[970px] items-center justify-between rounded-2xl border border-[#10283B]/10 bg-[#FBFAF7]/95 px-3 shadow-[0_14px_34px_rgba(16,40,59,0.14)] backdrop-blur-xl sm:px-4"><a href="#top" aria-label="Lumae home"><BrandLockup /></a><nav className="hidden items-center gap-5 md:flex" aria-label="Quick navigation"><a href="#platform" className="text-xs font-bold text-[#486170] hover:text-[#10283B]">Platform</a><a href="#pricing" className="text-xs font-bold text-[#486170] hover:text-[#10283B]">Pricing</a><a href="#research" className="text-xs font-bold text-[#486170] hover:text-[#10283B]">Research</a></nav><a href="#waitlist" className="rounded-full bg-[#0E867E] px-4 py-2.5 text-xs font-extrabold text-white shadow-sm transition-colors hover:bg-[#0a746d]">Early access</a></div></div>;
+}
+
 export default function Home() {
   const [annual, setAnnual] = useState(true);
   const [menuOpen, setMenuOpen] = useState(false);
+  const [showScrollNav, setShowScrollNav] = useState(false);
   const [form, setForm] = useState({ email: "", name: "", company: "", industry: "" as "" | IndustryValue, companySize: "" as "" | CompanySizeValue });
   const [formMessage, setFormMessage] = useState("");
   const joinWaitlist = trpc.waitlist.join.useMutation({
@@ -162,6 +167,13 @@ export default function Home() {
     },
     onError: () => setFormMessage("Please enter a valid email address and try again."),
   });
+
+  useEffect(() => {
+    const updateScrollNavigation = () => setShowScrollNav(window.scrollY > 140);
+    updateScrollNavigation();
+    window.addEventListener("scroll", updateScrollNavigation, { passive: true });
+    return () => window.removeEventListener("scroll", updateScrollNavigation);
+  }, []);
 
   function submitWaitlist(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -175,9 +187,10 @@ export default function Home() {
 
   return (
     <main className="lumae-landing min-h-screen overflow-x-hidden bg-[#FBFAF7] text-[#10283B]">
+      <ScrollNavigation visible={showScrollNav} />
       <a href="#main-content" className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[60] focus:rounded-lg focus:bg-[#10283B] focus:px-4 focus:py-3 focus:text-white">Skip to content</a>
 
-      <header className="sticky top-0 z-50 border-b border-[#10283B]/8 bg-[#FBFAF7]/92 backdrop-blur-xl">
+      <header className="relative z-50 border-b border-[#10283B]/8 bg-[#FBFAF7]/92 backdrop-blur-xl">
         <div className="mx-auto flex h-[76px] max-w-[1280px] items-center justify-between px-5 sm:px-8">
           <a href="#top" aria-label="Lumae home"><BrandLockup /></a>
           <nav className="hidden items-center gap-6 lg:flex" aria-label="Primary navigation">
@@ -203,20 +216,20 @@ export default function Home() {
       <section id="main-content" className="grain relative border-b border-[#10283B]/8" aria-labelledby="hero-heading">
         <div className="mx-auto grid max-w-[1280px] gap-14 px-5 pb-16 pt-16 sm:px-8 sm:pb-24 sm:pt-24 lg:grid-cols-[1.02fr_0.98fr] lg:items-center lg:gap-10 lg:pb-28 lg:pt-28">
           <div className="relative z-10 max-w-2xl">
-            <TinyTag><span className="h-1.5 w-1.5 rounded-full bg-[#0E867E]" /> ANZ customer intelligence</TinyTag>
-            <h1 id="hero-heading" className="mt-7 max-w-[710px] text-balance text-[3.1rem] font-extrabold leading-[0.98] tracking-[-0.075em] text-[#10283B] sm:text-[4.45rem] lg:text-[5.1rem]">Customer clarity,<br /><span className="text-[#0E867E]">in action.</span></h1>
-            <p className="mt-7 max-w-xl text-pretty text-lg leading-8 text-[#486170] sm:text-xl">Lumae helps ANZ businesses turn NPS and CSAT feedback into focused conversations, accountable recovery, and better customer decisions.</p>
-            <div className="mt-9 flex flex-col gap-3 sm:flex-row">
+            <div className="hero-intro hero-intro-1"><TinyTag><span className="h-1.5 w-1.5 rounded-full bg-[#0E867E]" /> ANZ customer intelligence</TinyTag></div>
+            <h1 id="hero-heading" className="hero-intro hero-intro-2 mt-7 max-w-[710px] text-balance text-[3.1rem] font-extrabold leading-[0.98] tracking-[-0.075em] text-[#10283B] sm:text-[4.45rem] lg:text-[5.1rem]">Customer clarity,<br /><span className="text-[#0E867E]">in action.</span></h1>
+            <p className="hero-intro hero-intro-3 mt-7 max-w-xl text-pretty text-lg leading-8 text-[#486170] sm:text-xl">Lumae helps ANZ businesses turn NPS and CSAT feedback into focused conversations, accountable recovery, and better customer decisions.</p>
+            <div className="hero-intro hero-intro-4 mt-9 flex flex-col gap-3 sm:flex-row">
               <a href="#waitlist" className="group inline-flex items-center justify-center gap-2 rounded-full bg-[#0E867E] px-6 py-4 text-sm font-extrabold text-white shadow-[0_12px_28px_rgba(14,134,126,0.22)] transition-all hover:-translate-y-0.5 hover:bg-[#0a746d]">Start Free Trial <ArrowRight size={17} className="transition-transform group-hover:translate-x-1" /></a>
               <a href="#waitlist" className="inline-flex items-center justify-center gap-2 rounded-full border border-[#10283B]/15 bg-white px-6 py-4 text-sm font-extrabold text-[#10283B] transition-colors hover:border-[#10283B]/30 hover:bg-[#E9F0F0]">Book a Demo <ArrowDownRight size={17} /></a>
             </div>
-            <div className="mt-10 flex flex-wrap gap-x-5 gap-y-3 text-sm font-medium text-[#486170]">
+            <div className="hero-intro hero-intro-5 mt-10 flex flex-wrap gap-x-5 gap-y-3 text-sm font-medium text-[#486170]">
               <span className="inline-flex items-center gap-2"><CircleCheck size={17} className="text-[#0E867E]" />Built for service-led teams</span>
               <span className="inline-flex items-center gap-2"><CircleCheck size={17} className="text-[#0E867E]" />Local currency, global ambition</span>
             </div>
           </div>
 
-          <div className="relative mx-auto w-full max-w-[580px] lg:mr-0">
+          <div className="hero-visual hero-intro hero-intro-3 relative mx-auto w-full max-w-[580px] lg:mr-0">
             <div className="absolute inset-8 rounded-[42px] border border-dashed border-[#0E867E]/30" />
             <div className="hero-orbit absolute left-[8%] top-[12%] h-[78%] w-[78%] rounded-full border border-[#0E867E]/15" />
             <div className="relative overflow-hidden rounded-[30px] border border-white/80 bg-[#10283B] p-4 shadow-[0_28px_65px_rgba(16,40,59,0.22)] sm:p-5">
@@ -272,7 +285,7 @@ export default function Home() {
 
       <section id="platform" className="mx-auto max-w-[1280px] px-5 py-20 sm:px-8 sm:py-28" aria-labelledby="features-heading">
         <div className="max-w-2xl"><TinyTag>One system, clear next steps</TinyTag><h2 id="features-heading" className="mt-6 text-balance text-4xl font-extrabold leading-[1.02] tracking-[-0.065em] sm:text-5xl">Every feedback programme needs a better follow-through.</h2><p className="mt-6 text-lg leading-8 text-[#486170]">Lumae is shaped around the practical work behind a score: capture the context, understand the trend, send the right signal to the right person, and show what changed.</p></div>
-        <div className="mt-14 grid gap-x-8 gap-y-0 md:grid-cols-2 lg:grid-cols-3">{capabilities.map(({ icon: Icon, title, copy }, index) => <article key={title} className="border-t border-[#10283B]/12 py-7"><span className="grid h-11 w-11 place-items-center rounded-xl bg-[#E9F0F0] text-[#0E867E]"><Icon size={21} /></span><p className="mt-6 font-mono text-[10px] uppercase tracking-[0.15em] text-[#486170]">0{index + 1}</p><h3 className="mt-2 text-xl font-extrabold tracking-[-0.045em]">{title}</h3><p className="mt-3 max-w-sm text-sm leading-6 text-[#486170]">{copy}</p></article>)}</div>
+        <div className="mt-14 grid gap-x-8 gap-y-0 md:grid-cols-2 lg:grid-cols-3">{capabilities.map(({ icon: Icon, title, copy }, index) => <article key={title} className="feature-card rounded-2xl border-t border-[#10283B]/12 p-5 py-7"><span className="feature-icon grid h-11 w-11 place-items-center rounded-xl bg-[#E9F0F0] text-[#0E867E] transition-colors duration-150"><Icon size={21} /></span><p className="feature-eyebrow mt-6 font-mono text-[10px] uppercase tracking-[0.15em] text-[#486170]">0{index + 1}</p><h3 className="feature-title mt-2 text-xl font-extrabold tracking-[-0.045em] transition-colors duration-150">{title}</h3><p className="mt-3 max-w-sm text-sm leading-6 text-[#486170]">{copy}</p></article>)}</div>
       </section>
 
       <section className="mx-auto max-w-[1280px] px-5 pb-20 sm:px-8 sm:pb-28">
