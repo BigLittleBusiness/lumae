@@ -367,10 +367,10 @@ export default function Home() {
 
           <div className="mt-12 grid gap-4 md:grid-cols-2 lg:grid-cols-4">
             {[
-              ["01", "Clear by design", "Straightforward AUD plans and a practical product path help teams understand what they are adopting before they scale."],
-              ["02", "Action has an owner", "Connect feedback to the right customer, journey, and responsible person so a score can become a considered next step."],
-              ["03", "ANZ-first, practical by default", "Use local-currency plans and an interface shaped around privacy-aware, consent-conscious service workflows familiar to ANZ teams."],
-              ["04", "One feedback operating loop", "Bring collection, context, response, and reporting into a focused workflow that makes customer learning easier to use."],
+              ["01", "Know the cost before you commit", "See a clear AUD plan and choose what fits your team now, without needing a complex pricing conversation to understand where to start."],
+              ["02", "No more feedback without a next step", "When a customer raises a concern, give the right person the context to respond—not another spreadsheet or inbox to chase."],
+              ["03", "Fits the way ANZ service teams work", "Start with local-currency plans and privacy-aware, consent-conscious workflow language that reflects the realities of local service delivery."],
+              ["04", "Turn a score into useful action", "Bring signals, customer context, and follow-up work into one place, so your team can see what needs attention and what changed."],
             ].map(([number, title, copy]) => (
               <article key={number} className="rounded-3xl border border-white/12 bg-white/[0.055] p-6 transition-colors hover:bg-white/[0.09]">
                 <p className="font-mono text-[10px] uppercase tracking-[0.16em] text-[#69d7ce]">{number}</p>

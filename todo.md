@@ -31,3 +31,4 @@
 - [x] Add an original Why Lumae section focused on transparent AUD pricing, action-led recovery, ANZ-first usability, and the feedback-to-action loop.
 - [x] Verify the revised public positioning at desktop and mobile sizes, then run the test and type-check suite.
 - [x] Make the Why Lumae section explicitly explain ANZ-first usability and local operating fit, then re-verify its responsive presentation.
+- [x] Refine all four Why Lumae value pillars with customer-centric, buyer-interview-style language.
