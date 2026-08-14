@@ -17,6 +17,26 @@ body { margin: 0; min-width: 320px; background: #fbfaf7; }
 * { box-sizing: border-box; }
 button, input { font: inherit; }
 
+/* Keep CTA geometry stable while the optional web font and hover state initialise. */
+.lumae-landing a,
+.lumae-landing button {
+  -webkit-tap-highlight-color: transparent;
+  backface-visibility: hidden;
+  transform: translateZ(0);
+}
+
+.lumae-landing .transition-all {
+  transition-property: transform, background-color, border-color, color, box-shadow !important;
+  transition-duration: 150ms;
+  transition-timing-function: cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+@media (hover: none) {
+  .lumae-landing .hover\:-translate-y-0\.5:hover {
+    transform: translateZ(0);
+  }
+}
+
 .grain::before {
   content: "";
   pointer-events: none;

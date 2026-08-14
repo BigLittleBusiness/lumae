@@ -174,7 +174,7 @@ export default function Home() {
   }
 
   return (
-    <main className="min-h-screen overflow-x-hidden bg-[#FBFAF7] text-[#10283B]">
+    <main className="lumae-landing min-h-screen overflow-x-hidden bg-[#FBFAF7] text-[#10283B]">
       <a href="#main-content" className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[60] focus:rounded-lg focus:bg-[#10283B] focus:px-4 focus:py-3 focus:text-white">Skip to content</a>
 
       <header className="sticky top-0 z-50 border-b border-[#10283B]/8 bg-[#FBFAF7]/92 backdrop-blur-xl">

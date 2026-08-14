@@ -16,3 +16,4 @@
 - [x] Add an interactive marketing-site survey-builder preview that lets visitors configure and preview a simple survey.
 - [x] Extend early-access signups with industry and company-size fields across the database schema, server validation, and form experience.
 - [x] Add tests for the expanded lead-capture payload and verify the new page and interactive preview across desktop and mobile.
+- [x] Fix home-page button tremor and any related load-time UI movement.
