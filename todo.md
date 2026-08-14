@@ -32,3 +32,4 @@
 - [x] Verify the revised public positioning at desktop and mobile sizes, then run the test and type-check suite.
 - [x] Make the Why Lumae section explicitly explain ANZ-first usability and local operating fit, then re-verify its responsive presentation.
 - [x] Refine all four Why Lumae value pillars with customer-centric, buyer-interview-style language.
+- [x] Add a concrete, original feedback-to-action workflow example beneath the Why Lumae pillars.

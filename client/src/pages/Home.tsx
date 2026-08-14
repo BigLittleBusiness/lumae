@@ -380,6 +380,31 @@ export default function Home() {
             ))}
           </div>
 
+          <div className="mt-6 rounded-[28px] border border-white/12 bg-white/[0.045] p-5 sm:p-7">
+            <div className="flex flex-col justify-between gap-4 border-b border-white/12 pb-6 md:flex-row md:items-end">
+              <div>
+                <p className="font-mono text-[10px] uppercase tracking-[0.16em] text-[#69d7ce]">Illustrative workflow</p>
+                <h3 className="mt-3 text-2xl font-extrabold tracking-[-0.055em] sm:text-3xl">From a low score to a considered follow-up.</h3>
+              </div>
+              <p className="max-w-md text-sm leading-6 text-white/60">A practical example of how a service team could use Lumae after a customer-support interaction.</p>
+            </div>
+            <div className="mt-6 grid gap-4 lg:grid-cols-4">
+              {[
+                ["01", "Capture the moment", "A customer selects 2/5 after a support interaction and adds a short comment."],
+                ["02", "Keep the context", "The response is viewed with the customer, service moment, and relevant details in one place."],
+                ["03", "Give follow-up an owner", "A team member receives a clear next step with enough context to respond with care."],
+                ["04", "Learn from the outcome", "The follow-up outcome is recorded so leaders can see what changed and where patterns recur."],
+              ].map(([number, title, copy], index) => (
+                <div key={number} className="relative rounded-2xl bg-[#10283B] p-5 ring-1 ring-white/10">
+                  <p className="font-mono text-[10px] tracking-[0.14em] text-[#69d7ce]">{number}</p>
+                  <h4 className="mt-6 text-lg font-extrabold tracking-[-0.045em]">{title}</h4>
+                  <p className="mt-3 text-sm leading-6 text-white/62">{copy}</p>
+                  {index < 3 && <ArrowRight size={16} className="absolute -bottom-3 left-1/2 z-10 -translate-x-1/2 rotate-90 rounded-full bg-[#0E867E] p-1 text-white lg:-right-3 lg:bottom-auto lg:left-auto lg:top-1/2 lg:-translate-y-1/2 lg:translate-x-0 lg:rotate-0" />}
+                </div>
+              ))}
+            </div>
+          </div>
+
           <div className="mt-8 flex flex-col justify-between gap-5 border-t border-white/12 pt-7 sm:flex-row sm:items-center">
             <p className="max-w-2xl text-sm leading-6 text-white/55">The platform direction remains centred on practical measurement, accountable recovery, and customer context—not comparison with other providers.</p>
             <a href="#waitlist" className="inline-flex shrink-0 items-center justify-center gap-2 rounded-full bg-[#0E867E] px-5 py-3 text-sm font-extrabold text-white transition-colors hover:bg-[#0a746d]">See what Lumae can enable <ArrowRight size={16} /></a>
