@@ -1,20 +1,25 @@
-import { and, count, desc, eq } from "drizzle-orm";
+import { and, count, desc, eq, gt } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/mysql2";
 import {
+  auditLogs,
   earlyAccessSignups,
   InsertEarlyAccessSignup,
   InsertUser,
   journeys,
+  organisationInvitations,
   organisationMembers,
   organisations,
+  platformProviderConfigs,
   responseActions,
+  surveyDeliveries,
   surveyQuestions,
   surveyResponses,
   surveys,
   users,
 } from "../drizzle/schema";
-import { actionStatusSchema, defaultQuestionFor, journeyDraftSchema, memberRoleSchema, responseActionSchema, responseStatusSchema, scaleFor, slugifyWorkspaceName, surveyDraftSchema, workspaceCreateSchema, workspaceSettingsSchema } from "./lumae";
+import { actionStatusSchema, defaultQuestionFor, deliveryRequestSchema, invitationSchema, journeyDraftSchema, memberRoleSchema, providerConfigSchema, responseActionSchema, responseStatusSchema, scaleFor, slugifyWorkspaceName, surveyDraftSchema, tenantSecuritySchema, workspaceCreateSchema, workspaceSettingsSchema } from "./lumae";
 import { ENV } from "./_core/env";
+import { createInvitationToken, decryptSensitiveValue, encryptSensitiveValue, hashValue } from "./tenantSecurity";
 
 let _db: ReturnType<typeof drizzle> | null = null;
 
@@ -88,13 +93,25 @@ export async function createEarlyAccessSignup(signup: InsertEarlyAccessSignup) {
 export async function getWorkspaceForUser(userId: number) {
   const db = await getDb();
   if (!db) throw new Error("Database is not available");
+  const user = (await db.select({ activeOrganisationId: users.activeOrganisationId }).from(users).where(eq(users.id, userId)).limit(1))[0];
   const rows = await db
     .select({ organisation: organisations, membership: organisationMembers })
     .from(organisationMembers)
     .innerJoin(organisations, eq(organisationMembers.organisationId, organisations.id))
-    .where(eq(organisationMembers.userId, userId))
+    .where(and(eq(organisationMembers.userId, userId), user?.activeOrganisationId ? eq(organisationMembers.organisationId, user.activeOrganisationId) : undefined))
     .limit(1);
   return rows[0];
+}
+
+export async function listWorkspacesForUser(userId: number) {
+  const db = await getDb();
+  if (!db) throw new Error("Database is not available");
+  return db
+    .select({ organisation: organisations, membership: organisationMembers })
+    .from(organisationMembers)
+    .innerJoin(organisations, eq(organisationMembers.organisationId, organisations.id))
+    .where(eq(organisationMembers.userId, userId))
+    .orderBy(organisations.name);
 }
 
 export async function createWorkspaceForUser(userId: number, input: unknown) {
@@ -119,8 +136,19 @@ export async function createWorkspaceForUser(userId: number, input: unknown) {
   });
   const organisationId = Number(result[0].insertId);
   await db.insert(organisationMembers).values({ organisationId, userId, role: "owner" });
+  await db.update(users).set({ activeOrganisationId: organisationId }).where(eq(users.id, userId));
 
   return (await db.select().from(organisations).where(eq(organisations.id, organisationId)).limit(1))[0];
+}
+
+export async function switchActiveOrganisation(userId: number, organisationId: number) {
+  const db = await getDb();
+  if (!db) throw new Error("Database is not available");
+  const membership = (await db.select({ id: organisationMembers.id }).from(organisationMembers).where(and(eq(organisationMembers.userId, userId), eq(organisationMembers.organisationId, organisationId))).limit(1))[0];
+  if (!membership) throw new Error("You are not a member of this organisation");
+  await db.update(users).set({ activeOrganisationId: organisationId }).where(eq(users.id, userId));
+  await writeAuditLog({ organisationId, actorUserId: userId, action: "organisation.switched", entityType: "organisation", entityId: String(organisationId) });
+  return getWorkspaceForUser(userId);
 }
 
 export async function updateWorkspaceSettings(organisationId: number, input: unknown) {
@@ -159,6 +187,120 @@ export async function updateOrganisationMemberRole(organisationId: number, input
     .update(organisationMembers)
     .set({ role: values.role })
     .where(and(eq(organisationMembers.organisationId, organisationId), eq(organisationMembers.userId, values.userId)));
+}
+
+export async function writeAuditLog(input: {
+  organisationId?: number | null;
+  actorUserId?: number | null;
+  action: string;
+  entityType: string;
+  entityId?: string | null;
+  metadata?: Record<string, unknown>;
+}) {
+  const db = await getDb();
+  if (!db) throw new Error("Database is not available");
+  await db.insert(auditLogs).values({
+    organisationId: input.organisationId ?? null,
+    actorUserId: input.actorUserId ?? null,
+    action: input.action,
+    entityType: input.entityType,
+    entityId: input.entityId ?? null,
+    metadata: input.metadata ? JSON.stringify(input.metadata) : null,
+  });
+}
+
+export async function createOrganisationInvitation(organisationId: number, invitedByUserId: number, input: unknown) {
+  const values = invitationSchema.parse(input);
+  const db = await getDb();
+  if (!db) throw new Error("Database is not available");
+  const token = createInvitationToken();
+  const tokenHash = hashValue(token);
+  const email = values.email.toLowerCase();
+  const expiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000);
+  const result = await db.insert(organisationInvitations).values({ organisationId, email, role: values.role, tokenHash, invitedByUserId, expiresAt });
+  const invitationId = Number(result[0].insertId);
+  await writeAuditLog({ organisationId, actorUserId: invitedByUserId, action: "invitation.created", entityType: "organisation_invitation", entityId: String(invitationId), metadata: { email, role: values.role } });
+  return { invitationId, token, email, role: values.role, expiresAt };
+}
+
+export async function listOrganisationInvitations(organisationId: number) {
+  const db = await getDb();
+  if (!db) throw new Error("Database is not available");
+  return db.select().from(organisationInvitations).where(eq(organisationInvitations.organisationId, organisationId)).orderBy(desc(organisationInvitations.createdAt));
+}
+
+export async function acceptOrganisationInvitation(userId: number, userEmail: string | null, rawToken: string) {
+  if (!userEmail) throw new Error("An email address is required to accept an invitation");
+  const db = await getDb();
+  if (!db) throw new Error("Database is not available");
+  const invitation = await db.select().from(organisationInvitations).where(and(eq(organisationInvitations.tokenHash, hashValue(rawToken)), eq(organisationInvitations.status, "pending"), gt(organisationInvitations.expiresAt, new Date()))).limit(1);
+  const row = invitation[0];
+  if (!row || row.email.toLowerCase() !== userEmail.toLowerCase()) throw new Error("This invitation is invalid, expired, or intended for a different account");
+  await db.insert(organisationMembers).values({ organisationId: row.organisationId, userId, role: row.role }).onDuplicateKeyUpdate({ set: { role: row.role } });
+  await db.update(organisationInvitations).set({ status: "accepted", acceptedAt: new Date() }).where(eq(organisationInvitations.id, row.id));
+  await db.update(users).set({ activeOrganisationId: row.organisationId }).where(eq(users.id, userId));
+  await writeAuditLog({ organisationId: row.organisationId, actorUserId: userId, action: "invitation.accepted", entityType: "organisation_invitation", entityId: String(row.id) });
+  return getWorkspaceForUser(userId);
+}
+
+export async function updateTenantSecuritySettings(organisationId: number, input: unknown, actorUserId: number) {
+  const values = tenantSecuritySchema.parse(input);
+  const db = await getDb();
+  if (!db) throw new Error("Database is not available");
+  await db.update(organisations).set(values).where(eq(organisations.id, organisationId));
+  await writeAuditLog({ organisationId, actorUserId, action: "organisation.security.updated", entityType: "organisation", entityId: String(organisationId), metadata: values });
+  return (await db.select().from(organisations).where(eq(organisations.id, organisationId)).limit(1))[0];
+}
+
+export async function listPlatformProviderConfigs() {
+  const db = await getDb();
+  if (!db) throw new Error("Database is not available");
+  return db.select({ provider: platformProviderConfigs.provider, enabled: platformProviderConfigs.enabled, publicConfiguration: platformProviderConfigs.publicConfiguration, lastTestStatus: platformProviderConfigs.lastTestStatus, lastTestedAt: platformProviderConfigs.lastTestedAt, updatedAt: platformProviderConfigs.updatedAt }).from(platformProviderConfigs);
+}
+
+export async function getPlatformProviderRuntimeConfig(provider: "stripe" | "aws_ses" | "twilio" | "hubspot" | "zendesk" | "oidc_google" | "oidc_microsoft") {
+  const db = await getDb();
+  if (!db) throw new Error("Database is not available");
+  const row = (await db.select().from(platformProviderConfigs).where(eq(platformProviderConfigs.provider, provider)).limit(1))[0];
+  if (!row?.enabled || !row.secretConfigurationCiphertext) throw new Error(`${provider} is not enabled or configured`);
+  return {
+    publicConfiguration: row.publicConfiguration ? JSON.parse(row.publicConfiguration) as Record<string, string> : {},
+    secretConfiguration: JSON.parse(decryptSensitiveValue(row.secretConfigurationCiphertext)) as Record<string, string>,
+  };
+}
+
+export async function updatePlatformProviderConfig(actorUserId: number, input: unknown) {
+  const values = providerConfigSchema.parse(input);
+  const db = await getDb();
+  if (!db) throw new Error("Database is not available");
+  const secretConfigurationCiphertext = Object.keys(values.secretConfiguration).length ? encryptSensitiveValue(JSON.stringify(values.secretConfiguration)) : undefined;
+  const existing = await db.select().from(platformProviderConfigs).where(eq(platformProviderConfigs.provider, values.provider)).limit(1);
+  const data = { enabled: values.enabled, publicConfiguration: JSON.stringify(values.publicConfiguration), ...(secretConfigurationCiphertext ? { secretConfigurationCiphertext } : {}), updatedByUserId: actorUserId };
+  if (existing[0]) await db.update(platformProviderConfigs).set(data).where(eq(platformProviderConfigs.id, existing[0].id));
+  else await db.insert(platformProviderConfigs).values({ provider: values.provider, ...data });
+  await writeAuditLog({ actorUserId, action: "platform.provider.updated", entityType: "provider", entityId: values.provider, metadata: { enabled: values.enabled, publicKeys: Object.keys(values.publicConfiguration), secretKeys: Object.keys(values.secretConfiguration) } });
+  return (await listPlatformProviderConfigs()).find(config => config.provider === values.provider);
+}
+
+export async function queueSurveyDelivery(organisationId: number, actorUserId: number, input: unknown) {
+  const values = deliveryRequestSchema.parse(input);
+  const db = await getDb();
+  if (!db) throw new Error("Database is not available");
+  const survey = await getSurveyForOrganisation(organisationId, values.surveyId);
+  if (!survey || survey.survey.status !== "published") throw new Error("Publish the survey before queueing delivery");
+  if (values.journeyId) {
+    const journey = (await db.select().from(journeys).where(and(eq(journeys.id, values.journeyId), eq(journeys.organisationId, organisationId))).limit(1))[0];
+    if (!journey) throw new Error("Journey not found in this workspace");
+  }
+  const provider = values.channel === "email" ? "aws_ses" : values.channel === "sms" ? "twilio" : null;
+  if (provider) {
+    const configured = (await db.select().from(platformProviderConfigs).where(and(eq(platformProviderConfigs.provider, provider), eq(platformProviderConfigs.enabled, true))).limit(1))[0];
+    if (!configured) throw new Error(`${provider === "aws_ses" ? "AWS SES" : "Twilio"} must be enabled by a system administrator before delivery can be queued`);
+  }
+  const result = await db.insert(surveyDeliveries).values({ organisationId, surveyId: values.surveyId, journeyId: values.journeyId ?? null, channel: values.channel, recipientHash: hashValue(values.recipient.trim().toLowerCase()), recipientCiphertext: encryptSensitiveValue(values.recipient.trim()) });
+  const deliveryId = Number(result[0].insertId);
+  await writeAuditLog({ organisationId, actorUserId, action: "survey.delivery.queued", entityType: "survey_delivery", entityId: String(deliveryId), metadata: { surveyId: values.surveyId, channel: values.channel } });
+  return (await db.select().from(surveyDeliveries).where(eq(surveyDeliveries.id, deliveryId)).limit(1))[0];
 }
 
 export async function getWorkspaceDashboard(organisationId: number) {

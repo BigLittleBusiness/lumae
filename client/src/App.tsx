@@ -10,6 +10,8 @@ import LumaeAppShell from "./components/LumaeAppShell";
 import AppWorkspace, { RequireWorkspace } from "./pages/AppWorkspace";
 import { ActionQueue, Reporting, ResponseIntelligence, WorkspaceSettings } from "./pages/ResponseIntelligence";
 import { SurveyBuilder, SurveyDetail, SurveyList } from "./pages/SurveyStudio";
+import SystemAdministration from "./pages/SystemAdministration";
+import AcceptInvitation from "./pages/AcceptInvitation";
 
 function Router() {
   // make sure to consider if you need authentication for certain routes
@@ -24,6 +26,8 @@ function Router() {
       <Route path={"/app/actions"}><LumaeAppShell><RequireWorkspace><ActionQueue /></RequireWorkspace></LumaeAppShell></Route>
       <Route path={"/app/reports"}><LumaeAppShell><RequireWorkspace><Reporting /></RequireWorkspace></LumaeAppShell></Route>
       <Route path={"/app/settings"}><LumaeAppShell><RequireWorkspace><WorkspaceSettings /></RequireWorkspace></LumaeAppShell></Route>
+      <Route path={"/app/system"}><LumaeAppShell><SystemAdministration /></LumaeAppShell></Route>
+      <Route path={"/app/invite"} component={AcceptInvitation} />
       <Route path={"/app"}><LumaeAppShell><AppWorkspace /></LumaeAppShell></Route>
       <Route path={"/404"} component={NotFound} />
       {/* Final fallback route */}

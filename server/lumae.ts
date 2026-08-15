@@ -68,6 +68,35 @@ export const memberRoleSchema = z.object({
   role: z.enum(["admin", "manager", "analyst", "responder", "viewer"]),
 });
 
+export const invitationSchema = z.object({
+  email: z.string().trim().email().max(320),
+  role: z.enum(["admin", "manager", "analyst", "responder", "viewer"]).default("viewer"),
+});
+
+export const invitationTokenSchema = z.object({ token: z.string().trim().min(20).max(256) });
+
+export const providerValues = ["stripe", "aws_ses", "twilio", "hubspot", "zendesk", "oidc_google", "oidc_microsoft"] as const;
+
+export const providerConfigSchema = z.object({
+  provider: z.enum(providerValues),
+  enabled: z.boolean(),
+  publicConfiguration: z.record(z.string(), z.string()).default({}),
+  secretConfiguration: z.record(z.string(), z.string()).default({}),
+});
+
+export const tenantSecuritySchema = z.object({
+  retentionDays: z.number().int().min(30).max(3650),
+  ssoProvider: z.enum(["oidc_google", "oidc_microsoft"]).nullable(),
+  ssoRequired: z.boolean(),
+});
+
+export const deliveryRequestSchema = z.object({
+  surveyId: z.number().int().positive(),
+  journeyId: z.number().int().positive().optional(),
+  channel: z.enum(["email", "sms", "in_app", "qr"]),
+  recipient: z.string().trim().min(3).max(320),
+});
+
 export function slugifyWorkspaceName(name: string) {
   return name
     .trim()

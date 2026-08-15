@@ -1,5 +1,6 @@
 import { useAuth } from "@/_core/hooks/useAuth";
 import { startLogin } from "@/const";
+import { trpc } from "@/lib/trpc";
 import { cn } from "@/lib/utils";
 import {
   BarChart3,
@@ -11,6 +12,7 @@ import {
   Menu,
   Plus,
   Settings2,
+  ShieldCheck,
   Sparkles,
   UsersRound,
 } from "lucide-react";
@@ -56,6 +58,9 @@ export default function LumaeAppShell({ children }: { children: React.ReactNode 
   const [location, setLocation] = useLocation();
   const [mobileOpen, setMobileOpen] = useState(false);
   const [collapsed, setCollapsed] = useState(false);
+  const workspaces = trpc.workspace.all.useQuery(undefined, { enabled: Boolean(user) });
+  const utils = trpc.useUtils();
+  const switchWorkspace = trpc.workspace.switchOrganisation.useMutation({ onSuccess: async () => { await Promise.all([utils.workspace.me.invalidate(), utils.workspace.all.invalidate(), utils.workspace.dashboard.invalidate(), utils.intelligence.responses.invalidate(), utils.intelligence.actions.invalidate()]); setLocation("/app"); } });
 
   if (loading) {
     return <div className="min-h-screen bg-[#fbfaf7]" aria-busy="true" />;
@@ -77,7 +82,8 @@ export default function LumaeAppShell({ children }: { children: React.ReactNode 
     );
   }
 
-  const activeItem = [...navigation].sort((a, b) => b.path.length - a.path.length).find(item => location === item.path || (item.path !== "/app" && location.startsWith(`${item.path}/`)));
+  const visibleNavigation = user.role === "admin" ? [...navigation, { label: "System admin", path: "/app/system", icon: ShieldCheck }] : navigation;
+  const activeItem = [...visibleNavigation].sort((a, b) => b.path.length - a.path.length).find(item => location === item.path || (item.path !== "/app" && location.startsWith(`${item.path}/`)));
   const initial = user.name?.slice(0, 1).toUpperCase() ?? "L";
 
   return (
@@ -89,7 +95,7 @@ export default function LumaeAppShell({ children }: { children: React.ReactNode 
         </div>
         {collapsed && <button onClick={() => setCollapsed(false)} className="mt-3 grid h-8 w-8 place-items-center self-center rounded-lg text-[#486170] hover:bg-[#e9f0f0]" aria-label="Expand navigation"><Menu className="h-4 w-4" /></button>}
         <nav className="mt-8 space-y-1">
-          {navigation.map(item => {
+          {visibleNavigation.map(item => {
             const Icon = item.icon;
             const isActive = activeItem?.path === item.path;
             return <button key={item.path} onClick={() => setLocation(item.path)} title={collapsed ? item.label : undefined} className={cn("flex h-11 w-full items-center gap-3 rounded-xl px-3 text-left text-sm font-semibold transition-colors", isActive ? "bg-[#10283b] text-white" : "text-[#486170] hover:bg-[#e9f0f0] hover:text-[#10283b]", collapsed && "justify-center px-0") }><Icon className="h-[18px] w-[18px] shrink-0" />{!collapsed && <span>{item.label}</span>}</button>;
@@ -106,11 +112,11 @@ export default function LumaeAppShell({ children }: { children: React.ReactNode 
 
       <header className="sticky top-0 z-40 flex h-[68px] items-center justify-between border-b border-[#dce7e7] bg-[#fbfaf7]/95 px-5 backdrop-blur md:ml-[250px] md:px-8">
         <button className="grid h-10 w-10 place-items-center rounded-xl hover:bg-[#e9f0f0] md:hidden" onClick={() => setMobileOpen(true)} aria-label="Open navigation"><Menu className="h-5 w-5" /></button>
-        <div className="hidden items-center gap-2 text-sm text-[#486170] md:flex"><Sparkles className="h-4 w-4 text-[#0e867e]" /><span>Collect. Understand. Recover. Improve.</span></div>
+        <div className="hidden items-center gap-2 text-sm text-[#486170] md:flex"><Sparkles className="h-4 w-4 text-[#0e867e]" />{workspaces.data && workspaces.data.length > 1 ? <select aria-label="Switch organisation" disabled={switchWorkspace.isPending} value={workspaces.data.find(item => item.organisation.id === user?.activeOrganisationId)?.organisation.id ?? ""} onChange={event => switchWorkspace.mutate({ organisationId: Number(event.target.value) })} className="h-9 max-w-[260px] rounded-lg border border-[#dce7e7] bg-white px-2 text-sm font-semibold text-[#10283b]"><option value="" disabled>Select workspace</option>{workspaces.data.map(item => <option key={item.organisation.id} value={item.organisation.id}>{item.organisation.name}</option>)}</select> : <span>Collect. Understand. Recover. Improve.</span>}</div>
         <button onClick={() => setLocation("/app/surveys/new")} className="inline-flex h-10 items-center gap-2 rounded-xl bg-[#0e867e] px-4 text-sm font-bold text-white shadow-sm transition-transform active:scale-[0.98]"><Plus className="h-4 w-4" />New survey</button>
       </header>
 
-      {mobileOpen && <div className="fixed inset-0 z-[60] bg-[#10283b]/40 md:hidden" onClick={() => setMobileOpen(false)}><aside className="h-full w-[280px] bg-white p-4 shadow-2xl" onClick={event => event.stopPropagation()}><div className="flex items-center justify-between"><BrandLockup /><button className="grid h-9 w-9 place-items-center rounded-lg hover:bg-[#e9f0f0]" onClick={() => setMobileOpen(false)}><ChevronLeft className="h-4 w-4" /></button></div><nav className="mt-8 space-y-1">{navigation.map(item => { const Icon = item.icon; const isActive = activeItem?.path === item.path; return <button key={item.path} onClick={() => { setLocation(item.path); setMobileOpen(false); }} className={cn("flex h-11 w-full items-center gap-3 rounded-xl px-3 text-left text-sm font-semibold", isActive ? "bg-[#10283b] text-white" : "text-[#486170]")}><Icon className="h-[18px] w-[18px]" />{item.label}</button>; })}</nav></aside></div>}
+      {mobileOpen && <div className="fixed inset-0 z-[60] bg-[#10283b]/40 md:hidden" onClick={() => setMobileOpen(false)}><aside className="h-full w-[280px] bg-white p-4 shadow-2xl" onClick={event => event.stopPropagation()}><div className="flex items-center justify-between"><BrandLockup /><button className="grid h-9 w-9 place-items-center rounded-lg hover:bg-[#e9f0f0]" onClick={() => setMobileOpen(false)}><ChevronLeft className="h-4 w-4" /></button></div><nav className="mt-8 space-y-1">{visibleNavigation.map(item => { const Icon = item.icon; const isActive = activeItem?.path === item.path; return <button key={item.path} onClick={() => { setLocation(item.path); setMobileOpen(false); }} className={cn("flex h-11 w-full items-center gap-3 rounded-xl px-3 text-left text-sm font-semibold", isActive ? "bg-[#10283b] text-white" : "text-[#486170]")}><Icon className="h-[18px] w-[18px]" />{item.label}</button>; })}</nav></aside></div>}
 
       <main className={cn("px-5 py-7 md:ml-[250px] md:px-8 md:py-9", collapsed && "md:ml-[84px]")}>
         <div className="mx-auto max-w-[1280px]">{children}</div>

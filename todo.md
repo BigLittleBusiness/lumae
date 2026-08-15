@@ -75,3 +75,22 @@
 - [x] If required, correct any remaining direct-browser session, cookie, or redirect mismatch and re-test the published path.
 - [x] Redirect completed Lumae sign-ins directly into the authenticated application workspace rather than back to the marketing home page.
 - [x] Ensure the unauthenticated workspace query returns a stable null value instead of undefined.
+- [x] Define the multi-tenant security, provider-integration, and system-administration architecture.
+- [x] Add self-service invitations, tenant-aware onboarding, organisation audit logging, and configurable retention controls.
+- [x] Add system-admin configuration interfaces for Stripe, AWS SES, Twilio, HubSpot, Zendesk, OIDC SSO, retention, and live delivery.
+- [x] Add subscription, SSO, provider-connection, and live-distribution service foundations without activating external providers until configured.
+- [ ] Add comprehensive cross-tenant security and provider-configuration tests, verify admin workflows, checkpoint, and push the completed expansion to GitHub.
+- [x] Resolve the provider-configuration uniqueness declaration conflict and apply the multi-tenant migration.
+- [x] Repair the tenant-router import block and rerun type validation.
+- [x] Resolve the system-administration page module registration error and rebuild the admin UI.
+- [x] Fix the tenant settings query declaration order and rerun application type validation.
+- [x] Implement invitation delivery and acceptance UI plus multi-organisation switching for invited users.
+- [x] Add a visible multi-organisation switcher wired to the active-organisation API and test cross-tenant scoping after an invitation is accepted.
+- [x] Add a visible multi-organisation switcher wired to the active-organisation API.
+- [ ] Add automated cross-tenant invitation acceptance, active-workspace switching, and tenant-data isolation tests.
+- [ ] Manually verify the multi-organisation switcher with an account that belongs to at least two workspaces.
+- [ ] Add provider-backed invitation email dispatch, while retaining the secure copy-link fallback until SES is configured.
+- [ ] Add retention and delivery governance visibility to the system-admin workspace.
+- [ ] Implement Stripe Checkout, verified webhook handling, and essential tenant subscription identifiers.
+- [ ] Implement OIDC initiation and callback foundations for Google Workspace and Microsoft Entra ID.
+- [ ] Implement disabled-by-default AWS SES/Twilio delivery dispatch and initial HubSpot/Zendesk connector foundations.
