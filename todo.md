@@ -45,6 +45,30 @@
 - [x] Commit all completed Lumae project changes and push them to the configured GitHub repository.
 - [ ] Commit and push each future completed task group to the Lumae GitHub repository.
 - [x] Review the Why Lumae value pillars at mobile breakpoints for typography, spacing, hierarchy, and interaction comfort.
+- [x] Define the Lumae application MVP scope and core data model from the published product architecture.
+- [x] Build a branded authenticated workspace with organisation, member-role, and navigation foundations.
+- [x] Build survey studio workflows for creating, previewing, publishing, and managing NPS/CSAT/CES surveys.
+- [x] Build response intelligence, feedback ownership, action tracking, and initial reporting workflows.
+- [x] Build administration foundations for workspace settings, brands, access, and survey delivery readiness.
+- [x] Add application tests, verify desktop/mobile app layouts, save a checkpoint, and push the completed task group to GitHub.
+- [x] Fix the Lumae settings-page icon import TypeScript error and rerun type validation.
+- [x] Complete the journey API wiring and resolve the resulting Survey Studio TypeScript errors.
+- [x] Complete the workspace settings validation and database helper wiring, then resolve the administration API import error.
+- [x] Add response and action lifecycle controls for status changes, resolution, and visible ownership updates.
+- [x] Add administration controls for people and roles plus delivery-readiness channels and frequency safeguards.
+- [x] Update the organisation settings form to persist delivery channels and the frequency safeguard fields.
+- [x] Correct the action-resolution mutation so that resolving an action also closes its associated response.
+- [x] Complete the organisation-member database helper wiring and clear the member-role API import error.
+- [x] Update workspace settings validation tests for delivery-readiness requirements and rerun the full suite.
+- [x] Display the assignee and ownership state in response and action views.
+- [x] Add explicit response and action status transitions beyond the resolve-only path, then re-test the lifecycle controls.
 - [x] Set the Lumae GitHub destination to github.com/BigLittleBusiness/lumae and verify authenticated access before pushing.
 - [x] Switch the Lumae repository to session-scoped GitHub authentication and remove only the Lumae PAT from persistent credential storage without affecting other repositories.
 - [x] Verify that no Lumae credential remains in persistent Git storage and that this repository uses only its session-scoped cache.
+- [x] Capture final responsive verification for the latest Lumae settings and action lifecycle views.
+- [ ] Save a new web project checkpoint for the Lumae application MVP.
+- [ ] Commit and push the completed Lumae application task group to GitHub, then verify the remote and worktree state.
+- [x] Add a visible public Sign in to Lumae entry point that routes users to the authenticated application.
+- [ ] Diagnose and resolve the mismatch between managed-preview authentication and the direct development URL sign-in flow.
+- [x] Redirect completed Lumae sign-ins directly into the authenticated application workspace rather than back to the marketing home page.
+- [x] Ensure the unauthenticated workspace query returns a stable null value instead of undefined.

@@ -17,6 +17,14 @@ body { margin: 0; min-width: 320px; background: #fbfaf7; }
 * { box-sizing: border-box; }
 button, input { font: inherit; }
 
+.lumae-app button, .lumae-app input, .lumae-app select, .lumae-app textarea { -webkit-tap-highlight-color: transparent; }
+
+@media (prefers-reduced-motion: no-preference) {
+  .lumae-app .app-panel-enter { animation: app-panel-enter 220ms cubic-bezier(0.23, 1, 0.32, 1) both; }
+}
+
+@keyframes app-panel-enter { from { opacity: 0; transform: translate3d(0, 8px, 0); } to { opacity: 1; transform: translate3d(0, 0, 0); } }
+
 /* Keep CTA geometry stable while the optional web font and hover state initialise. */
 .lumae-landing a,
 .lumae-landing button {
