@@ -66,9 +66,12 @@
 - [x] Switch the Lumae repository to session-scoped GitHub authentication and remove only the Lumae PAT from persistent credential storage without affecting other repositories.
 - [x] Verify that no Lumae credential remains in persistent Git storage and that this repository uses only its session-scoped cache.
 - [x] Capture final responsive verification for the latest Lumae settings and action lifecycle views.
-- [ ] Save a new web project checkpoint for the Lumae application MVP.
+- [x] Save a new web project checkpoint for the Lumae application MVP.
 - [ ] Commit and push the completed Lumae application task group to GitHub, then verify the remote and worktree state.
 - [x] Add a visible public Sign in to Lumae entry point that routes users to the authenticated application.
-- [ ] Diagnose and resolve the mismatch between managed-preview authentication and the direct development URL sign-in flow.
+- [x] Diagnose and resolve the mismatch between managed-preview authentication and the direct development URL sign-in flow.
+- [x] Repair the published application route so the public /app entry does not return a 404 page.
+- [x] Verify direct browser sign-in end to end so the published /app route opens the authenticated Lumae workspace after login.
+- [x] If required, correct any remaining direct-browser session, cookie, or redirect mismatch and re-test the published path.
 - [x] Redirect completed Lumae sign-ins directly into the authenticated application workspace rather than back to the marketing home page.
 - [x] Ensure the unauthenticated workspace query returns a stable null value instead of undefined.
