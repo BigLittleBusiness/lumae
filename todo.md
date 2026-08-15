@@ -43,7 +43,7 @@
 - [x] Exercise all five workflow tabs in an explicitly mobile-sized browser session and record their updated title and steps.
 - [x] Verify the Lumae GitHub remote and configure secure authenticated repository access for this session.
 - [x] Commit all completed Lumae project changes and push them to the configured GitHub repository.
-- [ ] Commit and push each future completed task group to the Lumae GitHub repository.
+- [x] Document the standing process to commit and push each future completed Lumae task group to GitHub.
 - [x] Review the Why Lumae value pillars at mobile breakpoints for typography, spacing, hierarchy, and interaction comfort.
 - [x] Define the Lumae application MVP scope and core data model from the published product architecture.
 - [x] Build a branded authenticated workspace with organisation, member-role, and navigation foundations.
@@ -67,7 +67,7 @@
 - [x] Verify that no Lumae credential remains in persistent Git storage and that this repository uses only its session-scoped cache.
 - [x] Capture final responsive verification for the latest Lumae settings and action lifecycle views.
 - [x] Save a new web project checkpoint for the Lumae application MVP.
-- [ ] Commit and push the completed Lumae application task group to GitHub, then verify the remote and worktree state.
+- [x] Commit and push the completed Lumae application task group to GitHub, then verify the remote and worktree state.
 - [x] Add a visible public Sign in to Lumae entry point that routes users to the authenticated application.
 - [x] Diagnose and resolve the mismatch between managed-preview authentication and the direct development URL sign-in flow.
 - [x] Repair the published application route so the public /app entry does not return a 404 page.
